@@ -1,4 +1,4 @@
-import * as THREE from 'threejs';
+import * as THREE from 'three';
 import EventEmitter from 'events';
 import { proxyOptions } from './proxy.js';
 export class Object3D extends EventEmitter {
@@ -21,7 +21,6 @@ export class Object3D extends EventEmitter {
           materialUUid: mesh.material[index],
           materialPromise
         });
-        modelMesh.material = [];
         this.setObjectMaterial(modelMesh, index, material);
       }
     } else {
@@ -93,8 +92,10 @@ export class Object3D extends EventEmitter {
         if (child.material !== undefined) {
           if (Array.isArray(child.material)) {
             for (const _material of child.material) {
-              const materialData = modelOriginData.materials.find(material => material.uuid === _material.uuid);
-              materialData && this.setObjectMaterialRotationRepeatMap({ material: _material, materialData });
+              if (_material) {
+                const materialData = modelOriginData.materials.find(material => material.uuid === _material.uuid);
+                materialData && this.setObjectMaterialRotationRepeatMap({ material: _material, materialData });
+              }
             }
           } else {
             const materialData = modelOriginData.materials.find(material => material.uuid === child.material.uuid);

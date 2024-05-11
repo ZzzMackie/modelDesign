@@ -1,6 +1,6 @@
 import { THREE_TextureLoader, THREE_RGBELoader } from './Loader';
 import { fetchBlobUrl } from './LoaderUtils';
-import * as THREE from 'threejs';
+import * as THREE from 'three';
 import { proxyOptions } from './proxy.js';
 export class ImageTexture {
   constructor(config = {}, threeEngine) {

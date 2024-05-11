@@ -1,10 +1,10 @@
-import * as THREE from 'threejs';
+import * as THREE from 'three';
 
-import { TGALoader } from 'threejs/addons/loaders/TGALoader.js';
+import { TGALoader } from 'three/addons/loaders/TGALoader.js';
 
 import { getFilesFromItemList, createFilesMap } from './LoaderUtils.js';
 
-import { unzipSync, strFromU8 } from 'threejs/addons/libs/fflate.module.js';
+import { unzipSync, strFromU8 } from 'three/addons/libs/fflate.module.js';
 
 async function handleJSON({ scope, data, modelData, onSuccess, file, extension, filename }) {
   if (data.metadata === undefined) {
@@ -57,8 +57,8 @@ async function handleZIP({ scope, contents, modelData, onSuccess, file, extensio
   // Poly
 
   if (zip['model.obj'] && zip['materials.mtl']) {
-    const { MTLLoader } = await import('threejs/addons/loaders/MTLLoader.js');
-    const { OBJLoader } = await import('threejs/addons/loaders/OBJLoader.js');
+    const { MTLLoader } = await import('three/addons/loaders/MTLLoader.js');
+    const { OBJLoader } = await import('three/addons/loaders/OBJLoader.js');
     const materials = new MTLLoader().parse(strFromU8(zip['materials.mtl']));
     const object = new OBJLoader().setMaterials(materials).parse(strFromU8(zip['model.obj']));
     // editor.execute(new AddObjectCommand(editor, object));
@@ -88,7 +88,7 @@ async function handleZIP({ scope, contents, modelData, onSuccess, file, extensio
 
     switch (extension) {
       case 'fbx': {
-        const { FBXLoader } = await import('threejs/addons/loaders/FBXLoader.js');
+        const { FBXLoader } = await import('three/addons/loaders/FBXLoader.js');
 
         const loader = new FBXLoader(manager);
         const object = loader.parse(file.buffer);
@@ -136,16 +136,16 @@ async function handleZIP({ scope, contents, modelData, onSuccess, file, extensio
 }
 
 async function createGLTFLoader(manager) {
-  const { GLTFLoader } = await import('threejs/addons/loaders/GLTFLoader.js');
-  const { DRACOLoader } = await import('threejs/addons/loaders/DRACOLoader.js');
-  const { KTX2Loader } = await import('threejs/addons/loaders/KTX2Loader.js');
-  const { MeshoptDecoder } = await import('threejs/addons/libs/meshopt_decoder.module.js');
+  const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+  const { DRACOLoader } = await import('three/addons/loaders/DRACOLoader.js');
+  const { KTX2Loader } = await import('three/addons/loaders/KTX2Loader.js');
+  const { MeshoptDecoder } = await import('three/addons/libs/meshopt_decoder.module.js');
 
   const dracoLoader = new DRACOLoader();
-  dracoLoader.setDecoderPath('threejs/examples/jsm/libs/draco/gltf/');
+  dracoLoader.setDecoderPath('three/examples/jsm/libs/draco/gltf/');
 
   const ktx2Loader = new KTX2Loader();
-  ktx2Loader.setTranscoderPath('threejs/examples/jsm/libs/basis/');
+  ktx2Loader.setTranscoderPath('three/examples/jsm/libs/basis/');
 
   // editor.signals.rendererDetectKTX2Support.dispatch(ktx2Loader);
 
@@ -226,10 +226,10 @@ class Loader {
             async function (event) {
               const contents = event.target.result;
 
-              const { Rhino3dmLoader } = await import('threejs/addons/loaders/3DMLoader.js');
+              const { Rhino3dmLoader } = await import('three/addons/loaders/3DMLoader.js');
 
               const loader = new Rhino3dmLoader();
-              loader.setLibraryPath('threejs/examples/jsm/libs/rhino3dm/');
+              loader.setLibraryPath('three/examples/jsm/libs/rhino3dm/');
               loader.parse(
                 contents,
                 async function (object) {
@@ -254,7 +254,7 @@ class Loader {
           reader.addEventListener(
             'load',
             async function (event) {
-              const { TDSLoader } = await import('threejs/addons/loaders/TDSLoader.js');
+              const { TDSLoader } = await import('three/addons/loaders/TDSLoader.js');
               const loader = new TDSLoader();
               const object = loader.parse(event.target.result);
               await onSuccess({ object, data: modelData, file, extension, filename });
@@ -271,7 +271,7 @@ class Loader {
           reader.addEventListener(
             'load',
             async function (event) {
-              const { ThreeMFLoader } = await import('threejs/addons/loaders/3MFLoader.js');
+              const { ThreeMFLoader } = await import('three/addons/loaders/3MFLoader.js');
               const loader = new ThreeMFLoader();
               const object = loader.parse(event.target.result);
               await onSuccess({ object, data: modelData, file, extension, filename });
@@ -288,7 +288,7 @@ class Loader {
           reader.addEventListener(
             'load',
             async function (event) {
-              const { AMFLoader } = await import('threejs/addons/loaders/AMFLoader.js');
+              const { AMFLoader } = await import('three/addons/loaders/AMFLoader.js');
               const loader = new AMFLoader();
               const object = loader.parse(event.target.result);
               await onSuccess({ object, data: modelData, file, extension, filename });
@@ -307,7 +307,7 @@ class Loader {
             async function (event) {
               const contents = event.target.result;
 
-              const { ColladaLoader } = await import('threejs/addons/loaders/ColladaLoader.js');
+              const { ColladaLoader } = await import('three/addons/loaders/ColladaLoader.js');
 
               const loader = new ColladaLoader(manager);
               const collada = loader.parse(contents);
@@ -329,10 +329,10 @@ class Loader {
             async function (event) {
               const contents = event.target.result;
 
-              const { DRACOLoader } = await import('threejs/addons/loaders/DRACOLoader.js');
+              const { DRACOLoader } = await import('three/addons/loaders/DRACOLoader.js');
 
               const loader = new DRACOLoader();
-              loader.setDecoderPath('threejs/examples/jsm/libs/draco/');
+              loader.setDecoderPath('three/examples/jsm/libs/draco/');
               loader.parse(contents, async function (geometry) {
                 let object;
 
@@ -366,7 +366,7 @@ class Loader {
             'load',
             async function (event) {
               const contents = event.target.result;
-              const { FBXLoader } = await import('threejs/addons/loaders/FBXLoader.js');
+              const { FBXLoader } = await import('three/addons/loaders/FBXLoader.js');
               const loader = new FBXLoader(manager);
               const object = loader.parse(contents);
               await onSuccess({ object, data: modelData, file, extension, filename });
@@ -485,10 +485,10 @@ class Loader {
         //   reader.addEventListener(
         //     'load',
         //     async function (event) {
-        //       const { IFCLoader } = await import('threejs/addons/loaders/IFCLoader.js');
+        //       const { IFCLoader } = await import('three/addons/loaders/IFCLoader.js');
 
         //       var loader = new IFCLoader();
-        //       loader.ifcManager.setWasmPath('threejs/addons/loaders/ifc/');
+        //       loader.ifcManager.setWasmPath('three/addons/loaders/ifc/');
 
         //       const model = await loader.parse(event.target.result);
         //       model.mesh.name = filename;
@@ -507,7 +507,7 @@ class Loader {
           reader.addEventListener(
             'load',
             async function (event) {
-              const { KMZLoader } = await import('threejs/addons/loaders/KMZLoader.js');
+              const { KMZLoader } = await import('three/addons/loaders/KMZLoader.js');
 
               const loader = new KMZLoader();
               const collada = loader.parse(event.target.result);
@@ -528,10 +528,10 @@ class Loader {
           reader.addEventListener(
             'load',
             async function (event) {
-              const { LDrawLoader } = await import('threejs/addons/loaders/LDrawLoader.js');
+              const { LDrawLoader } = await import('three/addons/loaders/LDrawLoader.js');
 
               const loader = new LDrawLoader();
-              loader.setPath('threejs/examples/models/ldraw/officialLibrary/');
+              loader.setPath('three/examples/models/ldraw/officialLibrary/');
               loader.parse(event.target.result, async function (group) {
                 group.name = filename;
                 // Convert from LDraw coordinates: rotate 180 degrees around OX
@@ -553,7 +553,7 @@ class Loader {
             async function (event) {
               const contents = event.target.result;
 
-              const { MD2Loader } = await import('threejs/addons/loaders/MD2Loader.js');
+              const { MD2Loader } = await import('three/addons/loaders/MD2Loader.js');
 
               const geometry = new MD2Loader().parse(contents);
               const material = new THREE.MeshStandardMaterial();
@@ -579,7 +579,7 @@ class Loader {
             async event => {
               const contents = event.target.result;
 
-              const { OBJLoader } = await import('threejs/addons/loaders/OBJLoader.js');
+              const { OBJLoader } = await import('three/addons/loaders/OBJLoader.js');
 
               const object = new OBJLoader().parse(contents);
               object.name = filename;
@@ -599,7 +599,7 @@ class Loader {
             async function (event) {
               const contents = event.target.result;
 
-              const { PCDLoader } = await import('threejs/examples/jsm/loaders/PCDLoader.js');
+              const { PCDLoader } = await import('three/examples/jsm/loaders/PCDLoader.js');
 
               const points = new PCDLoader().parse(contents);
               points.name = filename;
@@ -619,7 +619,7 @@ class Loader {
             async function (event) {
               const contents = event.target.result;
 
-              const { PLYLoader } = await import('threejs/addons/loaders/PLYLoader.js');
+              const { PLYLoader } = await import('three/addons/loaders/PLYLoader.js');
 
               const geometry = new PLYLoader().parse(contents);
               let object;
@@ -652,7 +652,7 @@ class Loader {
             async function (event) {
               const contents = event.target.result;
 
-              const { STLLoader } = await import('threejs/addons/loaders/STLLoader.js');
+              const { STLLoader } = await import('three/addons/loaders/STLLoader.js');
 
               const geometry = new STLLoader().parse(contents);
               const material = new THREE.MeshStandardMaterial();
@@ -680,7 +680,7 @@ class Loader {
             async function (event) {
               const contents = event.target.result;
 
-              const { SVGLoader } = await import('threejs/addons/loaders/SVGLoader.js');
+              const { SVGLoader } = await import('three/addons/loaders/SVGLoader.js');
 
               const loader = new SVGLoader();
               const paths = loader.parse(contents).paths;
@@ -726,7 +726,7 @@ class Loader {
             async function (event) {
               const contents = event.target.result;
 
-              const { USDZLoader } = await import('threejs/examples/jsm/loaders/USDZLoader.js');
+              const { USDZLoader } = await import('three/examples/jsm/loaders/USDZLoader.js');
 
               const group = new USDZLoader().parse(contents);
               group.name = filename;
@@ -746,7 +746,7 @@ class Loader {
             async function (event) {
               const contents = event.target.result;
 
-              const { VOXLoader, VOXMesh } = await import('threejs/addons/loaders/VOXLoader.js');
+              const { VOXLoader, VOXMesh } = await import('three/addons/loaders/VOXLoader.js');
 
               const chunks = new VOXLoader().parse(contents);
 
@@ -777,7 +777,7 @@ class Loader {
             async function (event) {
               const contents = event.target.result;
 
-              const { VTKLoader } = await import('threejs/addons/loaders/VTKLoader.js');
+              const { VTKLoader } = await import('three/addons/loaders/VTKLoader.js');
 
               const geometry = new VTKLoader().parse(contents);
               const material = new THREE.MeshStandardMaterial();
@@ -800,7 +800,7 @@ class Loader {
             'load',
             async function (event) {
               const contents = event.target.result;
-              const { VRMLLoader } = await import('threejs/addons/loaders/VRMLLoader.js');
+              const { VRMLLoader } = await import('three/addons/loaders/VRMLLoader.js');
               const result = new VRMLLoader().parse(contents);
 
               onSuccess({ object: result, data: modelData, file, extension, filename });
@@ -819,7 +819,7 @@ class Loader {
             async function (event) {
               const contents = event.target.result;
 
-              const { XYZLoader } = await import('threejs/addons/loaders/XYZLoader.js');
+              const { XYZLoader } = await import('three/addons/loaders/XYZLoader.js');
 
               const geometry = new XYZLoader().parse(contents);
 

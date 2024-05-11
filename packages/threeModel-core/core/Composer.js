@@ -1,10 +1,10 @@
-// import { EffectComposer } from 'threejs/addons/postprocessing/EffectComposer.js';
-// import { RenderPass } from 'threejs/addons/postprocessing/RenderPass.js';
-// import { FilmPass } from 'threejs/addons/postprocessing/FilmPass.js';
-// import { BloomPass } from 'threejs/addons/postprocessing/BloomPass.js';
-// import { ShaderPass } from 'threejs/addons/postprocessing/ShaderPass.js';
-// import { HueSaturationShader } from 'threejs/examples/jsm/shaders/HueSaturationShader.js';
-// import * as THREE from 'threejs';
+// import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+// import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+// import { FilmPass } from 'three/addons/postprocessing/FilmPass.js';
+// import { BloomPass } from 'three/addons/postprocessing/BloomPass.js';
+// import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+// import { HueSaturationShader } from 'three/examples/jsm/shaders/HueSaturationShader.js';
+// import * as THREE from 'three';
 // const clock = new THREE.Clock();
 import { proxyOptions } from './proxy.js';
 export class Composer {

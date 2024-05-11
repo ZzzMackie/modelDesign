@@ -1,5 +1,5 @@
-import * as THREE from 'threejs';
-import { RectAreaLightHelper } from 'threejs/examples/jsm/helpers/RectAreaLightHelper.js';
+import * as THREE from 'three';
+import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
 //辅助器
 export class SceneHelpers {
   constructor(threeEngine) {

@@ -1,4 +1,4 @@
-import * as THREE from 'threejs';
+import * as THREE from 'three';
 import TWEEN from '@tweenjs/tween.js';
 import { proxyOptions } from './proxy.js';
 

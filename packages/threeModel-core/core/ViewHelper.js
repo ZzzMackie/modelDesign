@@ -1,4 +1,4 @@
-import { ViewHelper as ViewHelperBase } from 'threejs/examples/jsm/helpers/ViewHelper.js';
+import { ViewHelper as ViewHelperBase } from 'three/examples/jsm/helpers/ViewHelper.js';
 class ViewHelper extends ViewHelperBase {
   constructor(camera, containerDom, viewHelperDom) {
     super(camera, containerDom);

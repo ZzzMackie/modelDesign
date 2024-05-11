@@ -1,6 +1,6 @@
-import { OrbitControls } from 'threejs/examples/jsm/controls/OrbitControls.js';
-import { TransformControls } from 'threejs/examples/jsm/controls/TransformControls.js';
-import * as THREE from 'threejs';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js';
+import * as THREE from 'three';
 import EventEmitter from 'events';
 import { proxyOptions } from './proxy.js';
 const originVector = new THREE.Vector3(0, 0, 0); // 原点数据

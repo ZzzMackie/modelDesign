@@ -1,7 +1,7 @@
-import { FBXLoader } from 'threejs/examples/jsm/loaders/FBXLoader.js';
-import { RGBELoader } from 'threejs/examples/jsm/loaders/RGBELoader.js';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 
-import * as THREE from 'threejs';
+import * as THREE from 'three';
 
 export const THREE_FBXLoader = new FBXLoader();
 

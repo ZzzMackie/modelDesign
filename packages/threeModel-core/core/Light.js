@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import * as THREE from 'threejs';
+import * as THREE from 'three';
 import { proxyOptions } from './proxy.js';
 export class Light {
   constructor(threeEngine) {

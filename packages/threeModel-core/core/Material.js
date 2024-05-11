@@ -1,4 +1,4 @@
-import * as THREE from 'threejs';
+import * as THREE from 'three';
 import originMaterial from '../defaultData/originMaterial.js';
 import { proxyOptions } from './proxy.js';
 const rotationRepeatMap = ['normalMap', 'roughnessMap', 'metalnessMap'];
@@ -173,18 +173,20 @@ export class Material {
   }
   addMaterials(materials) {
     let _material = materials;
-    if (Array.isArray(materials)) {
-      for (const material of materials) {
-        if (this.materials.get(material.uuid)) {
-          _material = this.materials.get(material.uuid);
+    if (materials) {
+      if (Array.isArray(materials)) {
+        for (const material of materials) {
+          if (this.materials.get(material.uuid)) {
+            _material = this.materials.get(material.uuid);
+          }
+        }
+      } else {
+        if (this.materials.get(materials.uuid)) {
+          _material = this.materials.get(materials.uuid);
         }
       }
-    } else {
-      if (this.materials.get(materials.uuid)) {
-        _material = this.materials.get(materials.uuid);
-      }
+      this.materials.set(_material.uuid, _material);
     }
-    this.materials.set(_material.uuid, _material);
   }
 
   addMaterial(material) {
