@@ -1,0 +1,20 @@
+{
+  "name": "threemodel-core",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.1.4"
+  },
+  "dependencies": {
+    "threejs": "^0.163.0",
+    "@tweenjs/tween.js": "^23.1.1",
+    "events": "^3.3.0",
+    "localforage": "^1.10.0"
+  }
+}

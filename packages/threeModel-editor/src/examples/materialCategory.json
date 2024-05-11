@@ -1,0 +1,52 @@
+{
+    "data": [
+        {
+            "value": -1,
+            "label": "全部"
+        },
+        {
+            "value": 0,
+            "label": "其它"
+        },
+        {
+            "value": 1,
+            "label": "汽车漆"
+        },
+        {
+            "value": 2,
+            "label": "织物"
+        },
+        {
+            "value": 3,
+            "label": "皮革"
+        },
+        {
+            "value": 4,
+            "label": "透明"
+        },
+        {
+            "value": 5,
+            "label": "纸"
+        },
+        {
+            "value": 6,
+            "label": "塑料"
+        },
+        {
+            "value": 10,
+            "label": "木头"
+        },
+        {
+            "value": 7,
+            "label": "石头"
+        },
+        {
+            "value": 8,
+            "label": "食物"
+        },
+        {
+            "value": 9,
+            "label": "金属"
+        }
+    ]
+}

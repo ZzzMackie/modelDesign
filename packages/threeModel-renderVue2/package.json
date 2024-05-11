@@ -1,0 +1,33 @@
+{
+  "name": "threeModel-renderVue2",
+  "version": "0.2.0",
+  "description": "",
+  "main": "dist/threeModel-renderVue2.umd.min.js",
+  "module": "./src/main.js",
+  "scripts": {
+    "build:prod": "vue-cli-service build --target lib --name threeModel-renderVue2 src/main.js --mode  production",
+    "dev": "vue-cli-service serve --mode  development",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "repository": {
+  },
+  "bugs": {
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^5.0.8",
+    "@vue/cli-plugin-eslint": "^5.0.8",
+    "@vue/cli-service": "^5.0.8",
+    "node-polyfill-webpack-plugin": "^3.0.0",
+    "terser-webpack-plugin": "4.2.3",
+    "vue": "2.7.16",
+    "webpack": "5.88.2"
+  }
+}

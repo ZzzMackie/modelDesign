@@ -1,0 +1,62 @@
+{
+  "name": "modeldesign-vue3",
+  "version": "1.0.0",
+  "description": "模型设计器库",
+  "main": "index.js",
+  "scripts": {
+    "build:threeModel-renderVue2": "pnpm --filter=threeModel-renderVue2 run build:prod",
+    "release:threeModel-renderVue2": "pnpm i --filter=threeModel-renderVue2 && pnpm build:threeModel-renderVue2 && pnpm changeset && pnpm version-packages && pnpm release:only",
+    "build:threeModel-render": "pnpm --filter=threeModel-render run build:prod",
+    "release:threeModel-render": "pnpm i --filter=threeModel-render && pnpm build:threeModel-render && pnpm changeset && pnpm version-packages && pnpm release:only",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "aws": "aws codeartifact login --tool npm --domain fusen --domain-owner 622387176902 --repository fusen-npm",
+    "release": "pnpm i && pnpm build:all && pnpm changeset && pnpm version-packages && pnpm release:only",
+    "release:only": "changeset publish -r && pnpm git:push",
+    "git:push": "node ./scripts/gitPush.js",
+    "changeset": "changeset",
+    "clear": "node scripts/rmrf.js",
+    "commit": "cz",
+    "postinstall": "husky install",
+    "preinstall": "npx only-allow pnpm",
+    "version-packages": "changeset version",
+    "lint": "eslint . --ext .vue,.js,.jsx --fix",
+    "build:editor:prod": "pnpm --filter=threeModel-editor run build:prod",
+    "build:editor:dev": "pnpm --filter=threeModel-editor run build:dev",
+    "build:editor:test": "pnpm --filter=threeModel-editor run build:test",
+    "install:packages": "node scripts/installDependenciesInCI.js",
+    "prepare": "husky install"
+  },
+  "keywords": [
+    "modeldesign"
+  ],
+  "author": "",
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "license": "ISC",
+  "private": true,
+  "lint-staged": {
+    "*.{js,vue,jsx, md}": [
+      "eslint --fix"
+    ]
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.23.10",
+    "@changesets/cli": "^2.27.1",
+    "@commitlint/cli": "^18.6.1",
+    "@commitlint/config-conventional": "^18.6.2",
+    "@types/node": "^20.11.20",
+    "@vitejs/plugin-vue": "^5.0.4",
+    "commitizen": "^4.3.0",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-vue": "^9.22.0",
+    "husky": "^8.0.0",
+    "prettier": "^3.2.5",
+    "rimraf": "^5.0.5",
+    "vite": "^5.1.4",
+    "vite-plugin-eslint": "^1.8.1"
+  }
+}

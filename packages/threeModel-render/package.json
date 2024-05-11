@@ -1,0 +1,27 @@
+{
+  "name": "threeModel-render",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/threeModelRender.umd.cjs",
+  "module": "./dist/threeModelRender.js",
+  "exports": {
+    ".": {
+      "import": "./dist/threeModelRender.js",
+      "require": "./dist/threeModelRender.umd.cjs"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.4.19"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.4",
+    "vite": "^5.1.4"
+  }
+}
