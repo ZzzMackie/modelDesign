@@ -12,10 +12,11 @@ import { useProjectStore } from '@stores/project.js';
 import { useProject } from './projectStore.js';
 import { useScene } from './sceneStore.js';
 import { useSceneStore } from '@stores/scene.js';
-import { save } from '@request/save.js';
 import { upload, uploadBase64 } from './upload.js';
 import { useMessage } from '@use/message.js';
 import { appendQueryParam } from '@use/utils.js';
+import { IndexDb } from '@packages/threeModel-core/core/IndexDb.js';
+IndexDb.createStore('editorLocalStore');
 const excludeKey = ['uuid', 'name', 'category_id', 'geometries', 'threeEngine'];
 const sceneDataKey = [
   'UV',
@@ -288,9 +289,11 @@ export async function useSave() {
     canSave = await handleEnvironmentUpload(environment, canSave);
     if (canSave) {
       //   const response = await save(saveData);
-      save(saveData).then(() => {
-        $message.success('保存成功');
-      });
+      IndexDb['editorLocalStore'].setItem(scene.uuid, JSON.stringify(saveData));
+      $message.success('保存成功');
+      // save(saveData).then(() => {
+      //   $message.success('保存成功');
+      // });
     }
     return saveData;
   } catch (error) {
@@ -368,10 +371,13 @@ export async function useSaveAs() {
     canSave = await handleEnvironmentUpload(environment, canSave);
     if (canSave) {
       //   const response = await save(saveData);
-      save(saveData).then(() => {
-        $message.success('保存成功');
-        window.open(`/?scene=${saveData.scene.uuid}`, '_blank');
-      });
+      IndexDb['editorLocalStore'].setItem(scene.uuid, JSON.stringify(saveData));
+      $message.success('保存成功');
+      window.open(`/?scene=${saveData.scene.uuid}`, '_blank');
+      // save(saveData).then(() => {
+      //   $message.success('保存成功');
+      //   window.open(`/?scene=${saveData.scene.uuid}`, '_blank');
+      // });
     }
     return saveData;
   } catch (error) {

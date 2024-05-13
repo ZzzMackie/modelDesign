@@ -2,12 +2,13 @@ import { computed, defineAsyncComponent } from 'vue';
 import { useMaterialsSettingItem } from './materialsSettingItem.js';
 import { useScene } from '@use/sceneStore.js';
 import { useSceneStore } from '@stores/scene.js';
+import { useEditorStore } from '@stores/editor.js';
 import { createDrawer } from '@feature/drawer/index.js';
 const MaterialLibrary = defineAsyncComponent(() => import('@components/library/MaterialLibrary.vue'));
 export function useMaterialsSetting() {
   const { MeshPhysicalMaterial, MeshStandardMaterial, MeshBasicMaterial, fileImageData, modelMaterialChange } =
     useMaterialsSettingItem();
-  const { UV, currentMaterial } = useScene();
+  const { UV, currentMaterial, currentModel } = useScene();
   const sceneStore = useSceneStore();
   const file = computed(() => UV.value.file);
   const ai = computed(() => UV.value.ai);
@@ -87,6 +88,34 @@ export function useMaterialsSetting() {
         break;
     }
   };
+  const showMaterialOptions = computed(() => {
+    return Array.isArray(currentModel.value.material);
+  });
+  const materialSelectedOptions = computed(() => {
+    let options = [];
+    if (showMaterialOptions.value) {
+      currentModel.value.material.forEach((value, index) => {
+        const data = {};
+        data.value = index;
+        data.label = value;
+        options.push(data);
+      });
+    }
+    return options;
+  });
+  const materialSelectedData = computed(() => {
+    return {
+      type: 'select',
+      label: '材质面',
+      value: useEditorStore().selectedMaterial,
+      options: materialSelectedOptions.value,
+      allowSearch: true,
+      bordered: false
+    };
+  });
+  const materialSelectedChange = val => {
+    useEditorStore().setSelectedMaterial(val);
+  };
   return {
     file,
     ai,
@@ -98,6 +127,9 @@ export function useMaterialsSetting() {
     fileImageData,
     openMaterialLibrary,
     materialImageChange,
-    currentMaterial
+    currentMaterial,
+    showMaterialOptions,
+    materialSelectedData,
+    materialSelectedChange
   };
 }

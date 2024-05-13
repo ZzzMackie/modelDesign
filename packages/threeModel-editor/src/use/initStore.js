@@ -6,11 +6,11 @@ import { useControlsStore } from '@stores/controls.js';
 import { useLightStore } from '@stores/light.js';
 import { useEnvironmentStore } from '@stores/environment.js';
 import { useEditorStore } from '@stores/editor.js';
-import { getScene } from '@request/model.js';
 import { getEditorData } from '@request/editor.js';
 import { IndexDb } from '@packages/threeModel-core/core/IndexDb.js';
 import { PiniaUndo } from '@/piniaPlugins/pinia-undo.js';
 import { useHelperStore } from '@stores/helper.js';
+const editorLocalStore = IndexDb.createStore('editorLocalStore');
 const editorMaterialLibraryStore = IndexDb.createStore('editorMaterialLibraryStore');
 const initMaterialLibraryStore = async () => {
   const editorStore = useEditorStore();
@@ -22,7 +22,8 @@ const initMaterialLibraryStore = async () => {
 };
 export async function getStore(sceneId) {
   try {
-    const { scene, project, light, environment, controls, camera } = await getScene({ uuid: sceneId });
+    const data = await editorLocalStore.getItem(sceneId);
+    const { scene, project, light, environment, controls, camera } = JSON.parse(data);
 
     // 向URL对象添加参数
     // if (url.)

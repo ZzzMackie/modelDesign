@@ -20,7 +20,10 @@ const {
   fileImageData,
   openMaterialLibrary,
   materialImageChange,
-  currentMaterial
+  currentMaterial,
+  showMaterialOptions,
+  materialSelectedData,
+  materialSelectedChange
 } = useMaterialsSetting();
 </script>
 
@@ -115,6 +118,9 @@ const {
       <arco-col>
         <arco-col class="materialssetting__header">
           <arco-row class="materialssetting__title c__font-black">材质设置</arco-row>
+        </arco-col>
+        <arco-col v-if="showMaterialOptions" class="materialssetting__option">
+          <SettingItem :info="materialSelectedData" :label-span="7" @change="materialSelectedChange" />
         </arco-col>
         <arco-col
           v-if="MeshMaterial.length"
