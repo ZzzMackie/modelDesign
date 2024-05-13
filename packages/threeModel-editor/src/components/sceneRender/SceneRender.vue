@@ -89,14 +89,14 @@ const handleThreeAspectRatio = (reset = false) => {
           threeWidth = threeWidth - (threeHeight - sceneWrapHeight);
           threeHeight = sceneWrapHeight;
         }
-        threewrapStyle.value = `height:${threeHeight}px;aspect-ratio: ${aspectRatio};`;
+        threewrapStyle.value = `height:${threeHeight}px;`;
       } else {
         threeWidth = sceneWrapHeight * aspectRatio;
         if (threeWidth > sceneWrapWidth) {
           threeHeight = threeHeight - (threeWidth - sceneWrapWidth);
           threeWidth = sceneWrapWidth;
         }
-        threewrapStyle.value = `height: ${threeHeight}px;width:${threeWidth}px;aspect-ratio: ${aspectRatio};`;
+        threewrapStyle.value = `height: ${threeHeight}px;width:${threeWidth}px;`;
       }
     }
     if (threeHeight < sceneWrapHeight || threeWidth < sceneWrapWidth) {
