@@ -13,6 +13,7 @@ export class Object3D extends EventEmitter {
   // 加载模型材质列表
   loadMeshMaterials({ object, mesh, modelOriginData, materialPromise }) {
     const modelMesh = object.children[mesh.originIndex];
+    if (!modelMesh) return;
     modelMesh.geometry.attributes.uv2 = modelMesh.geometry.attributes.uv; //设置第二组uv
     if (Array.isArray(mesh.material)) {
       for (var index = 0, l = mesh.material.length; index < l; index++) {
@@ -185,7 +186,7 @@ export class Object3D extends EventEmitter {
       }
     };
     modelData.object.children.forEach((mesh, index) => {
-      if (mesh.type === 'Mesh') {
+      if (mesh.type === 'Mesh' || mesh.type.endsWith('Mesh')) {
         mesh.visible = true;
         mesh.transform = {
           translate: {
