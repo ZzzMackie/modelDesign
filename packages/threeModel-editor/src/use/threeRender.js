@@ -11,6 +11,7 @@ import { useLightStore } from '@stores/light.js';
 import { useEditorStore } from '@stores/editor.js';
 import { useMessage } from '@use/message.js';
 import { useThreeEngineVm } from './useThreeEngineVm.js';
+import { usePanelStore } from '@stores/panel.js';
 const message = str => {
   const message = useMessage();
   message.info({
@@ -141,6 +142,7 @@ const initEventListener = () => {
   threeEngine.renderer__three.on('intersectObjectSelected', intersectObject => {
     if (intersectObject.object.isMesh) {
       useSceneStore().setSelected(intersectObject.object.uuid, true);
+      usePanelStore().changePanel('Materials');
     }
   });
   // 变换控制器位置变换监听
