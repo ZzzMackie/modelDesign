@@ -46,7 +46,7 @@ export default defineConfig(({ mode }) => {
       drop: ['debugger'] // 删除 debugger
     },
     cacheDir: resolve(__dirname, `node_modules/.vite/${mode}`),
-    base: '/threeModel-editor/',
+    base: '/modelDesign/',
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src'),

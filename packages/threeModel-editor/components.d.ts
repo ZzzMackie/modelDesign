@@ -8,7 +8,6 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AddCategory: typeof import('./src/components/AddCategory.vue')['default']
-    AddNewCategory: typeof import('./src/components/renderSetting/AddNewCategory.vue')['default']
     BackgroundSetting: typeof import('./src/components/panel/BackgroundSetting.vue')['default']
     CameraSetting: typeof import('./src/components/panel/CameraSetting.vue')['default']
     FileUpload: typeof import('./src/components/FileUpload.vue')['default']

@@ -187,8 +187,8 @@ export const getQueryParam = key => {
 export const openScene = ({ uuid, target = '_blank' }) => {
   let token = getQueryParam('auth_key');
   if (token) {
-    window.open(`/threeModel-editor/?scene=${uuid}&auth_key=${token}`, target);
+    window.open(`/modelDesign/?scene=${uuid}&auth_key=${token}`, target);
   } else {
-    window.open(`/threeModel-editor/?scene=${uuid}`, target);
+    window.open(`/modelDesign/?scene=${uuid}`, target);
   }
 };

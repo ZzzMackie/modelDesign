@@ -35,7 +35,7 @@
         "name": "默认",
         "type": "MeshPhysicalMaterial",
         "uuid": "01a628c3b5ef4cafbe5b54d363dd81ce",
-        "image": "/threeModel-editor/circle.png"
+        "image": "/modelDesign/circle.png"
     },
     "category_id": 0,
     "uuid": "01a628c3b5ef4cafbe5b54d363dd81ce",
