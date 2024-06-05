@@ -1,6 +1,6 @@
 /* eslint-disable no-useless-escape */
 import * as THREE from 'three';
-const name = 'three-editor';
+const name = 'threejs-editor';
 
 const storage = {
   language: 'en',

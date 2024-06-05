@@ -2,10 +2,10 @@
 import { computed, ref, h } from 'vue';
 import { useEditorStore } from '@stores/editor.js';
 import { useSceneStore } from '@stores/scene.js';
-import { appendQueryParam } from '@use/utils.js';
+import { appendQueryParam, openScene } from '@use/utils.js';
 import { useMessage } from '@use/message.js';
 import { useModal } from '@use/useModal.js';
-import AddCategory from './AddCategory.vue';
+import AddCategory from '../AddCategory.vue';
 const editorStore = useEditorStore();
 const sceneStore = useSceneStore();
 const canChangeScene = ref(true);
@@ -21,17 +21,10 @@ const sceneCategory = computed(() => {
   return editorStore.sceneCategory;
 });
 const addNewScene = async () => {
-  window.open(`/threeModel-editor/?scene=${sceneStore.threeEngine.generateUUID()}`, '_self');
+  openScene({ uuid: sceneStore.threeEngine.generateUUID(), target: '_self' });
 };
-const generateCategoryId = () => {
-  let id = parseInt(Math.random() * 1000000);
-  if (editorStore.hasSameCategoryId(id)) {
-    generateCategoryId();
-  }
-  return id;
-};
-const moveSceneCategory = (categoryId, sceneId) => {
-  console.log(categoryId, sceneId);
+const moveSceneCategory = (...args) => {
+  editorStore.moveSceneCategory(...args);
 };
 // eslint-disable-next-line no-unused-vars
 const addNewCategory = async () => {
@@ -47,8 +40,7 @@ const addNewCategory = async () => {
         }
       }),
     onOk: () => {
-      let id = generateCategoryId();
-      editorStore.addNewCategory(id, category_name.value);
+      editorStore.addNewSceneCategory(category_name.value);
     },
     onBeforeOk: () => {
       if (!category_name.value) {
@@ -67,13 +59,13 @@ const addNewCategory = async () => {
 
 <template>
   <div class="scenetoggle__wrap c_scrollbar c_scrollbar__x-none">
-    <template v-for="(child, idx) in sceneCategory" :key="child.category_id">
+    <template v-for="(child, idx) in sceneCategory" :key="child.id">
       <arco-collapse class="scenetoggle__item" :default-active-key="[0]" accordion :bordered="false">
         <arco-collapse-item :key="idx">
           <template #header>
             <div class="scenetoggle__collapseitemheader c__font-bold">
               <div class="scenetoggle__collapseitemname">
-                <span>{{ child.category_name }}</span>
+                <span>{{ child.name }}</span>
               </div>
             </div>
           </template>
@@ -90,13 +82,14 @@ const addNewCategory = async () => {
                   </arco-col>
                 </div>
                 <template #content>
-                  <arco-doption
-                    v-for="category in sceneCategory"
-                    :key="category.category_id"
-                    @click="moveSceneCategory(category.category_id, scene.uuid)"
-                  >
-                    移动到{{ category.category_name }}分类
-                  </arco-doption>
+                  <template v-for="category in sceneCategory" :key="category.id">
+                    <arco-doption
+                      v-if="child.id !== category.id && category.id !== -1 && category.id !== 0"
+                      @click="moveSceneCategory(scene.uuid, category.id)"
+                    >
+                      移动到{{ category.name }}分类
+                    </arco-doption>
+                  </template>
                 </template>
               </arco-dropdown>
             </template>
@@ -111,10 +104,6 @@ const addNewCategory = async () => {
       <span class="scenetoggle__text">新建场景</span>
       <svg-icon name="add" size="20"></svg-icon>
     </arco-col>
-    <!-- <arco-col class="scenetoggle__addcategory" :span="11" @click="addNewCategory">
-      <span class="scenetoggle__text">新建分类</span>
-      <svg-icon name="add" size="20"></svg-icon>
-    </arco-col> -->
   </div>
 </template>
 

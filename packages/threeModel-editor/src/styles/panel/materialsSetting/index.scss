@@ -8,16 +8,16 @@
     &uv{
         flex: 2;
         width: 100%;
-        margin-bottom: var(--base-margin-20);
     }
     &materials{
         flex: 5;
         width: 100%;
-        max-height: 780px;
         overflow-y: auto;
+        max-height: calc(100vh - 502px);
     }
     &uv,
     &materials{
+        transition: all .3s ease;
         background-color: #fff;
         width: 100%;
         padding: var(--base-padding-10);
@@ -128,4 +128,30 @@
         width: 100%;
         white-space: nowrap;
     }
+    &collapsed{
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        padding: 0;
+        &uv{
+            height: 15px;
+            width: 60px;
+            margin: var(--base-margin-10) auto var(--base-margin-10);
+        }
+        &-show{
+            max-height: calc(100vh - 94px);
+        }
+
+    }
 }
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 0.3s cubic-bezier(0.34, 0.69, 0.1, 1);
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  transform: translateY(-50px);
+  opacity: 0;
+}
+

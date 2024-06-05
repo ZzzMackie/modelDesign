@@ -10,7 +10,7 @@ export function useMaterialsSettingItem() {
   const fileImageData = computed(() => {
     return {
       value: currentMaterial.value.image,
-      type: 'fileImage',
+      isTexture: false,
       title: currentMaterial.value.name,
       des: editor.currentMaterialDes.value
     };
@@ -809,6 +809,50 @@ export function useMaterialsSettingItem() {
     deleteModelMaterialMap('thicknessMap');
   };
 
+  const specularMapData = computed(() => {
+    return {
+      label: '高光贴图',
+      type: 'upload',
+      value: sceneStore.getCurrentMaterialImage('specularMap')
+    };
+  });
+  const specularMapTips = `材质使用的高光贴图。默认值为null`;
+  const specularMapChange = ({ currentFile }) => {
+    modelMaterialChange('specularMap', currentFile);
+  };
+  const specularMapDelete = () => {
+    deleteModelMaterialMap('specularMap');
+  };
+
+  const specularColorMapData = computed(() => {
+    return {
+      label: '反射贴图',
+      type: 'upload',
+      value: sceneStore.getCurrentMaterialImage('specularColorMap')
+    };
+  });
+  const specularColorMapTips = `此纹理的alpha通道将与.specularColor相乘，用于逐像素地控制高光颜色。默认值为null。`;
+  const specularColorMapChange = ({ currentFile }) => {
+    modelMaterialChange('specularColorMap', currentFile);
+  };
+  const specularColorMapDelete = () => {
+    deleteModelMaterialMap('specularColorMap');
+  };
+
+  const specularColorData = computed(() => {
+    return {
+      label: '高光反射色',
+      type: 'color',
+      value: currentMaterial.value.specularColor,
+      key: colorKey.value
+    };
+  });
+  const specularColorTips = `非金属材质在垂直于法线方向观看时的高光反射颜色。默认值为0xffffff，白色。`;
+  const specularColorChange = val => {
+    const color = val;
+    modelMaterialChange('specularColor', color);
+  };
+
   const opacityData = computed(() => {
     return {
       label: '透明度',
@@ -977,10 +1021,16 @@ export function useMaterialsSettingItem() {
         case 'done':
         case 'error':
           await sceneStore.setCurrentModelMaterial(key, val);
-          if (['normalMap', 'roughnessMap', 'metalnessMap'].includes(key)) {
+          if (sceneStore.threeEngine.material__three.rotationRepeatMap.includes(key)) {
             setTimeout(() => {
               sceneStore.setCurrentModelMaterial('repeat', currentMaterial.value.repeat);
               sceneStore.setCurrentModelMaterial('rotation', currentMaterial.value.rotation || 0);
+            }, 300);
+          }
+          if (sceneStore.threeEngine.material__three.rotationRepeatSingleMap.includes(key)) {
+            setTimeout(() => {
+              sceneStore.setCurrentModelMaterial(`${key}Repeat`, currentMaterial.value[`${key}Repeat`] ?? 1);
+              sceneStore.setCurrentModelMaterial(`${key}Rotation`, currentMaterial.value[`${key}Rotation`] ?? 0);
             }, 300);
           }
           break;
@@ -996,7 +1046,7 @@ export function useMaterialsSettingItem() {
     return {
       label: '贴图缩放',
       type: 'slider',
-      value: currentMaterial.value.repeat !== undefined ? currentMaterial.value.repeat : 1,
+      value: currentMaterial.value.repeat ?? 1,
       showInput: true,
       max: 50,
       min: 0,
@@ -1010,7 +1060,7 @@ export function useMaterialsSettingItem() {
     return {
       label: '贴图旋转',
       type: 'slider',
-      value: currentMaterial.value.rotation !== undefined ? currentMaterial.value.rotation : 0,
+      value: currentMaterial.value.rotation ?? 0,
       showInput: true,
       max: 360,
       min: 0,
@@ -1019,6 +1069,64 @@ export function useMaterialsSettingItem() {
   });
   const rotationChange = val => {
     modelMaterialChange('rotation', val);
+  };
+  const mapRotationData = computed(() => {
+    return {
+      label: '颜色贴图旋转',
+      type: 'slider',
+      value: currentMaterial.value.mapRotation ?? 0,
+      showInput: true,
+      max: 360,
+      min: 0,
+      step: 0.1
+    };
+  });
+  const mapRotationChange = val => {
+    modelMaterialChange('mapRotation', val);
+  };
+
+  const mapRepeatData = computed(() => {
+    return {
+      label: '颜色贴图缩放',
+      type: 'slider',
+      value: currentMaterial.value.mapRepeat ?? 1,
+      showInput: true,
+      max: 50,
+      min: 0,
+      step: 0.1
+    };
+  });
+  const mapRepeatChange = val => {
+    modelMaterialChange('mapRepeat', val);
+  };
+
+  const aoMapRepeatData = computed(() => {
+    return {
+      label: 'ao贴图缩放',
+      type: 'slider',
+      value: currentMaterial.value.aoMapRepeat ?? 1,
+      showInput: true,
+      max: 50,
+      min: 0,
+      step: 0.1
+    };
+  });
+  const aoMapRepeatChange = val => {
+    modelMaterialChange('aoMapRepeat', val);
+  };
+  const aoMapRotationData = computed(() => {
+    return {
+      label: 'ao贴图旋转',
+      type: 'slider',
+      value: currentMaterial.value.aoMapRotation ?? 0,
+      showInput: true,
+      max: 360,
+      min: 0,
+      step: 0.1
+    };
+  });
+  const aoMapRotationChange = val => {
+    modelMaterialChange('aoMapRotation', val);
   };
   const DEFAULT__MATERIAL = computed(() => {
     return [
@@ -1072,12 +1180,44 @@ export function useMaterialsSettingItem() {
         key: 'map'
       },
       {
+        data: mapRepeatData.value,
+        change: mapRepeatChange,
+        tips: '',
+        inputChange: () => {},
+        delete: () => {},
+        key: 'mapRepeat'
+      },
+      {
+        data: mapRotationData.value,
+        change: mapRotationChange,
+        tips: '',
+        inputChange: () => {},
+        delete: () => {},
+        key: 'mapRotation'
+      },
+      {
         data: aoMapData.value,
         change: aoMapChange,
         tips: aoMapTips,
         inputChange: aoMapIntensityChange,
         delete: aoMapDelete,
         key: 'aoMap'
+      },
+      {
+        data: aoMapRepeatData.value,
+        change: aoMapRepeatChange,
+        tips: '',
+        inputChange: () => {},
+        delete: () => {},
+        key: 'aoMapRepeat'
+      },
+      {
+        data: aoMapRotationData.value,
+        change: aoMapRotationChange,
+        tips: '',
+        inputChange: () => {},
+        delete: () => {},
+        key: 'aoMapRotation'
       },
       {
         data: normalMapData.value,
@@ -1268,6 +1408,22 @@ export function useMaterialsSettingItem() {
   const MeshPhysicalMaterial = computed(() => {
     return [
       ...DEFAULT__MATERIAL.value,
+      {
+        data: specularColorMapData.value,
+        change: specularColorMapChange,
+        tips: specularColorMapTips,
+        inputChange: () => {},
+        delete: specularColorMapDelete,
+        key: 'specularColorMap'
+      },
+      {
+        data: specularColorData.value,
+        change: specularColorChange,
+        tips: specularColorTips,
+        inputChange: () => {},
+        delete: () => {},
+        key: 'specularColor'
+      },
       {
         data: reflectivityData.value,
         change: reflectivityChange,
@@ -1545,6 +1701,14 @@ export function useMaterialsSettingItem() {
         inputChange: aoMapIntensityChange,
         delete: aoMapDelete,
         key: 'aoMap'
+      },
+      {
+        data: specularMapData.value,
+        change: specularMapChange,
+        tips: specularMapTips,
+        inputChange: () => {},
+        delete: specularMapDelete,
+        key: 'specularMap'
       },
       {
         data: repeatData.value,

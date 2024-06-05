@@ -51,10 +51,10 @@ export const useEnvironmentStore = defineStore('environment', {
     setUUid(value) {
       this.uuid = value;
     },
-    setEnvironment(environment, change = true) {
+    async setEnvironment(environment, change = true) {
       for (const key of Object.keys(environment)) {
         this.environment[key] = environment[key];
-        change && this.changeEnvironment(key);
+        change && (await this.changeEnvironment(key));
       }
     },
     setBackground(background) {
@@ -84,7 +84,7 @@ export const useEnvironmentStore = defineStore('environment', {
       }
       this.changeEnvironment(type);
     },
-    changeEnvironment(key) {
+    async changeEnvironment(key) {
       const scene = useSceneStore();
       switch (key) {
         case 'envMapIntensity':
@@ -99,7 +99,7 @@ export const useEnvironmentStore = defineStore('environment', {
           }
           break;
         case 'environment':
-          scene.changeEnvironment(this.environment);
+          await scene.changeEnvironment(this.environment);
           break;
         default:
           this.threeEngine.updateEnvironmentProp({

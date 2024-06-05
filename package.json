@@ -9,7 +9,6 @@
     "build:threeModel-render": "pnpm --filter=threeModel-render run build:prod",
     "release:threeModel-render": "pnpm i --filter=threeModel-render && pnpm build:threeModel-render && pnpm changeset && pnpm version-packages && pnpm release:only",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "aws": "aws codeartifact login --tool npm --domain fusen --domain-owner 622387176902 --repository fusen-npm",
     "release": "pnpm i && pnpm build:all && pnpm changeset && pnpm version-packages && pnpm release:only",
     "release:only": "changeset publish -r && pnpm git:push",
     "git:push": "node ./scripts/gitPush.js",
@@ -29,7 +28,7 @@
   "keywords": [
     "modeldesign"
   ],
-  "author": "",
+  "author": "Chovi",
   "simple-git-hooks": {
     "pre-commit": "npx lint-staged"
   },

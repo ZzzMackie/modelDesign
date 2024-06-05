@@ -1,6 +1,9 @@
 import { useScene } from '@use/sceneStore.js';
 import { useSceneStore } from '@stores/scene.js';
 import { useEditorStore } from '@stores/editor.js';
+import { createDrawer } from '@feature/drawer/index.js';
+import { defineAsyncComponent } from 'vue';
+const SceneLibrary = defineAsyncComponent(() => import('@components/library/SceneLibrary.vue'));
 export function useSceneModel() {
   const { modelMesh, selected } = useScene();
   const sceneStore = useSceneStore();
@@ -53,6 +56,25 @@ export function useSceneModel() {
         break;
     }
   };
+  const openSceneLibrary = () => {
+    createDrawer({
+      key: 'SceneLibrary',
+      popupContainer: '#sceneWrap',
+      drawerOptions: {
+        props: {
+          title: '模型管理',
+          width: 600,
+          footer: false,
+          placement: 'left'
+        }
+      },
+      slotVnodeFn: h => {
+        return {
+          content: () => h(SceneLibrary)
+        };
+      }
+    });
+  };
   return {
     modelMesh,
     selected,
@@ -62,6 +84,7 @@ export function useSceneModel() {
     modelError,
     deleteGroup,
     deleteMesh,
-    modelMeshChange
+    modelMeshChange,
+    openSceneLibrary
   };
 }

@@ -76,6 +76,7 @@ export class Renderer extends EventEmitter {
     } else {
       this.renderer.render(this.threeEngine.scene__three, this.threeEngine.camera__three.viewportCamera);
     }
+    this?.threeEngine?.object3D__three?.render?.();
     this.threeEngine.sceneHelpers__three.renderHelper();
     this.threeEngine.sceneHelpers__three.renderGrid();
     this.renderer.xr.isPresenting !== true && this.threeEngine?.viewHelper__three?.render?.(this.renderer);

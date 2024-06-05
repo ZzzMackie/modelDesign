@@ -177,3 +177,18 @@ export const appendQueryParam = (key, value) => {
   // 用新的URL替换当前页面的地址
   window.history.pushState({ path: url.href }, '', url.href);
 };
+
+export const getQueryParam = key => {
+  const url = new URL(window.location.href);
+  const param = url.searchParams.get(key);
+  return param;
+};
+
+export const openScene = ({ uuid, target = '_blank' }) => {
+  let token = getQueryParam('auth_key');
+  if (token) {
+    window.open(`/threeModel-editor/?scene=${uuid}&auth_key=${token}`, target);
+  } else {
+    window.open(`/threeModel-editor/?scene=${uuid}`, target);
+  }
+};

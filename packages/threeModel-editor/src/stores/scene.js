@@ -33,6 +33,7 @@ export const useSceneStore = defineStore('scene', {
       name: 'Scene',
       category_id: 0,
       category_name: '默认',
+      model_type: 1,
       // 场景关联渲染数据
       camera: undefined,
       controls: undefined,
@@ -204,9 +205,9 @@ export const useSceneStore = defineStore('scene', {
       const originBackground = toRaw(background);
       this.threeEngine?.setBackground?.(originBackground);
     },
-    changeEnvironment(environment) {
+    async changeEnvironment(environment) {
       const originEnvironment = toRaw(environment);
-      this.threeEngine?.setEnvironment?.(originEnvironment);
+      await this.threeEngine?.setEnvironment?.(originEnvironment);
     },
     changeModelMeshOrder(order) {
       this.currentModel.renderOrder = order;

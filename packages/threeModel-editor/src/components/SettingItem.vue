@@ -86,9 +86,10 @@ const sliderValue = computed({
   // setter
   set(newValue) {
     sliderVal.value = newValue;
+    emit('change', newValue);
   }
 });
-const colorVal = ref('');
+const colorVal = ref(`#${new ThreeColor(info.value.value).getHexString()}`);
 const colorValue = computed({
   // getter
   get() {
@@ -97,9 +98,19 @@ const colorValue = computed({
   // setter
   set(newValue) {
     colorVal.value = newValue;
+    emit('change', newValue);
   }
 });
-const modelValue = ref(info.value.value);
+const modelValue = computed({
+  // getter
+  get() {
+    return info.value.value;
+  },
+  // setter
+  set(newValue) {
+    emit('change', newValue);
+  }
+});
 const x = ref(info.value.xValue);
 const y = ref(info.value.yValue);
 const z = ref(info.value.zValue);
@@ -134,13 +145,6 @@ const yValue = computed({
   }
 });
 const componentClass = computed(() => `settingitem__${info.value.type}`);
-const change = _val => {
-  if (isColor.value) {
-    colorValue.value = _val;
-  }
-  modelValue.value = _val;
-  emit('change', _val);
-};
 const selectChange = val => {
   emit('selectChange', val);
   emit('change', val);
@@ -274,7 +278,6 @@ onMounted(async () => {
           :min="info.min || 0"
           :step="info.step"
           :show-input="info.showInput"
-          @change="change"
         />
         <template v-else-if="isSwitch || isSelect">
           <arco-col v-if="isSelect" class="settingitem__selectswitch" :span="isSelectSwitch ? 20 : 24">
@@ -331,16 +334,9 @@ onMounted(async () => {
           placeholder="Please enter something"
           size="large"
           hide-button
-          @change="change"
         ></arco-input-number>
         <template v-else-if="isColor">
-          <arco-color-picker
-            :key="info.key"
-            :model-value="colorValue"
-            format="hex"
-            disabled-alpha
-            @change="change"
-          ></arco-color-picker>
+          <arco-color-picker :key="info.key" v-model="colorValue" format="hex" disabled-alpha></arco-color-picker>
         </template>
         <template v-else-if="isUpload">
           <arco-col class="settingitem__uploadcol" :span="info.showInput ? 6 : 12">
@@ -422,13 +418,7 @@ onMounted(async () => {
             <icon-delete class="settingitem__delete" />
           </arco-col>
         </template>
-        <arco-input
-          v-else-if="isTextInput"
-          v-model="modelValue"
-          placeholder="Please enter something"
-          allow-clear
-          @change="change"
-        />
+        <arco-input v-else-if="isTextInput" v-model="modelValue" placeholder="Please enter something" allow-clear />
       </arco-col>
     </arco-col>
     <file-upload

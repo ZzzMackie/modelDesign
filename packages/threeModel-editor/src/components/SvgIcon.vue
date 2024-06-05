@@ -41,7 +41,7 @@ const symbolId = computed(() => `#icon-${props.name}`);
   width: 1em;
   height: 1em;
   &:hover {
-    color: var(--base-color);
+    color: var(--base-hover-color);
   }
 }
 .svg__icon-nothover:hover {

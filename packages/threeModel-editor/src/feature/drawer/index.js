@@ -19,7 +19,7 @@ import { useEventBus } from '@vueuse/core';
 import ArcoVue from '@arco-design/web-vue';
 import '@styles/drawer.scss';
 const eventBus = useEventBus('drawer');
-import { defineAsyncComponent, createApp, h } from 'vue';
+import { defineAsyncComponent, createApp, h, ref } from 'vue';
 const opt = Object.prototype.toString;
 const querySelector = (selectors, container) => {
   var _a;
@@ -39,33 +39,56 @@ const VcDrawer = defineAsyncComponent(() => import('@components/VcDrawer.vue'));
 const DrawerMap = new Map(); //存弹窗实例
 class Drawer {
   constructor(options = {}) {
-    const { key, drawerOptions, slotVnodeFn } = options;
+    const { key, drawerOptions, slotVnodeFn, closeDrawerInstance = false } = options;
     this.options = options;
     this.slotVnodeFn = slotVnodeFn;
+    this.closeDrawerInstance = closeDrawerInstance;
     this.key = key || `drawer${Math.floor(Math.random() * 100)}`; //没有传入key则随机生成默认key
     this._vm = null;
     this.drawerOptions = drawerOptions;
     this.drawerOptions.props.drawerVm = this;
     this.popupContainer = null;
     this.mountApp = document.createElement('div');
+    this.mountApp.setAttribute('class', 'drawer__wrap');
     this.mountApp.setAttribute('id', this.key);
+    this.visibleDrawer = ref(true);
     this.init();
     DrawerMap.set(this.key, this);
   }
   // 关闭弹窗
-  close() {
+  async close() {
     // 销毁之前
     this.emit('beforeDestroyDrawer');
-    this._vm.unmount();
-    if (this.options.popupContainer) {
-      this.popupContainer = getElement(this.options.popupContainer);
-      this.popupContainer.removeChild(this.mountApp);
+    if (this.closeDrawerInstance) {
+      await this.hide();
+      this._vm.unmount();
+      if (this.options.popupContainer) {
+        this.popupContainer = getElement(this.options.popupContainer);
+        this.popupContainer.removeChild(this.mountApp);
+      } else {
+        document.body.removeChild(this.mountApp);
+      }
+      DrawerMap.delete(this.key);
     } else {
-      document.body.removeChild(this.mountApp);
+      await this.hide();
     }
-    DrawerMap.delete(this.key);
     // 销毁之后
     this.emit('destroyedDrawer');
+  }
+  async hide() {
+    this.visibleDrawer.value = false;
+    await new Promise(res => {
+      setTimeout(() => {
+        this.mountApp.style.display = 'none';
+        res();
+      }, 500);
+    });
+  }
+  show() {
+    this.mountApp.style.display = '';
+    requestAnimationFrame(() => {
+      this.visibleDrawer.value = true;
+    });
   }
   // 初始化弹窗
   init() {
@@ -97,6 +120,7 @@ class Drawer {
       // 用于改变使用组件时的前缀名称
       componentPrefix: 'arco'
     });
+    this._vm.provide('$visibleDrawer', this.visibleDrawer);
     if (this.options.popupContainer) {
       this.popupContainer = getElement(this.options.popupContainer);
       this.popupContainer.appendChild(this.mountApp);
@@ -121,6 +145,7 @@ class Drawer {
 const createDrawer = options => {
   const drawerVm = getDrawer(options.key);
   if (drawerVm) {
+    drawerVm.show();
     return drawerVm;
   }
   return new Drawer(options);
@@ -136,4 +161,10 @@ const closeDrawer = key => {
   DrawerMap.get(key)?.close?.();
 };
 
-export { createDrawer, getDrawer, closeDrawer };
+const clearDrawer = () => {
+  for (const drawer of DrawerMap.values()) {
+    drawer.close();
+  }
+};
+
+export { createDrawer, getDrawer, closeDrawer, clearDrawer };

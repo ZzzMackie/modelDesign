@@ -42,7 +42,7 @@
 }
 
 .scenemodel__delete:hover{
-  color: var(--base-color);
+  color: var(--base-hover-color);
 }
 .arco-message-list.arco-message-list-top{
   left: 0;

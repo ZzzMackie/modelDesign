@@ -188,7 +188,7 @@ export class ThreeEngine extends EventEmitter {
     return await this.object3D__three.addObjectGroup({ object, data });
   }
 
-  // 添加模型场景对象 three官方编辑器到出的场景json格式
+  // 添加模型场景对象 threeJs官方编辑器到出的场景json格式
   async addModelObject({ data, parent, index }) {
     return await this.object3D__three.addModelObject({ data, parent, index });
   }
@@ -198,7 +198,7 @@ export class ThreeEngine extends EventEmitter {
     return await this.object3D__three.changeObjectMesh(data);
   }
 
-  // 添加模型 three官 object3D格式
+  // 添加模型 threeJs官 object3D格式
   async loadMeshObject({ data, parent, index }) {
     return await this.object3D__three.loadMeshObject({ data, parent, index });
   }

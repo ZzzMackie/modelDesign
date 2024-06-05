@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import EventEmitter from 'events';
 import { proxyOptions } from './proxy.js';
+const clock = new THREE.Clock();
 export class Object3D extends EventEmitter {
   constructor(threeEngine) {
     super();
@@ -8,12 +9,22 @@ export class Object3D extends EventEmitter {
     this.texturePath = '';
     this.geometries = new Map();
     this.modelObjects = new Map();
+    this.mixer = new Map();
+    this.animations = new Map();
+    //执行的动画集合
+    this.animationsActions = new Map();
+    // 执行的动画
+    this.animationsAction = null;
+    // 执行所有动画
+    this.canPlay = false;
     proxyOptions(this, this.threeEngine);
   }
   // 加载模型材质列表
   loadMeshMaterials({ object, mesh, modelOriginData, materialPromise }) {
     const modelMesh = object.children[mesh.originIndex];
-    if (!modelMesh) return;
+    if (!modelMesh) {
+      return;
+    }
     modelMesh.geometry.attributes.uv2 = modelMesh.geometry.attributes.uv; //设置第二组uv
     if (Array.isArray(mesh.material)) {
       for (var index = 0, l = mesh.material.length; index < l; index++) {
@@ -41,7 +52,7 @@ export class Object3D extends EventEmitter {
     const currentMaterial = modelOriginData.materials.find(material => material.uuid === materialUUid);
     const material = new THREE[currentMaterial.type]();
     for (const key of Object.keys(currentMaterial)) {
-      if (this.material__three.rotationRepeatMap.includes(key) || ['rotation', 'repeat'].includes(key)) {
+      if (this.isRotationRepeatMap(key) || this.material__three.rotationRepeatKey.includes(key)) {
         // 贴图缩放旋转纹理贴图先不加载 相关数据也先不设置
         continue;
       }
@@ -106,11 +117,16 @@ export class Object3D extends EventEmitter {
       }
     });
   }
+  isRotationRepeatMap(key) {
+    return (
+      this.material__three.rotationRepeatMap.includes(key) || this.material__three.rotationRepeatSingleMap.includes(key)
+    );
+  }
   // 设置材质纹理贴图
   async setObjectMaterialRotationRepeatMap({ material, materialData }) {
     const rotationRepeatPromise = [];
     for (const key of Object.keys(materialData)) {
-      if (this.material__three.rotationRepeatMap.includes(key) && materialData[key]) {
+      if (this.isRotationRepeatMap(key) && materialData[key]) {
         rotationRepeatPromise.push(
           this.material__three.setMaterialTextureMap({
             material,
@@ -122,18 +138,15 @@ export class Object3D extends EventEmitter {
     }
     // 贴图缩放、旋转属性需要联动指定的纹理 所以需要等待他们加载完成再设置
     await Promise.allSettled(rotationRepeatPromise);
-    materialData['rotation'] !== undefined &&
-      this.material__three.setMaterialTextureMapRotationRepeat({
-        material,
-        key: 'rotation',
-        value: materialData['rotation']
-      });
-    materialData['repeat'] !== undefined &&
-      this.material__three.setMaterialTextureMapRotationRepeat({
-        material,
-        key: 'repeat',
-        value: materialData['repeat']
-      });
+    for (const key of this.material__three.rotationRepeatKey) {
+      materialData[key] !== undefined &&
+        this.material__three.setMaterialTextureMapRotationRepeat({
+          material,
+          key: key,
+          value: materialData[key],
+          isSingle: key.includes('map') || key.includes('Map')
+        });
+    }
     material.needsUpdate = true;
   }
   // 添加模型对象组
@@ -153,10 +166,20 @@ export class Object3D extends EventEmitter {
       await this.loadObjectGroup(model, data);
       return;
     }
+    if (model.animations) {
+      const mixer = new THREE.AnimationMixer(model);
+      model.tick = delta => mixer.update(delta);
+      this.mixer.set(model.uuid, mixer);
+      for (const animation of model.animations) {
+        this.animations.set(animation.uuid, animation);
+        this.animationsActions.set(animation.uuid, mixer.clipAction(animation));
+      }
+    }
     model.traverse(child => {
       if (child.isMesh) {
         child.geometry.attributes.uv2 = child.geometry.attributes.uv; //设置第二组uv
-        this.generateNewMeshMaterial(child);
+        // console.log(child);
+        // this.generateNewMeshMaterial(child);
       }
     });
     this.addObject({ object: model });
@@ -167,6 +190,10 @@ export class Object3D extends EventEmitter {
       material.image = '/threeModel-editor/circle.png';
       material.rotation = 0;
       material.repeat = 1;
+      material.mapRotation = 0;
+      material.mapRepeat = 1;
+      material.aoMapRotation = 0;
+      material.aoMapRepeat = 1;
     }
     modelData.object.transform = {
       translate: {
@@ -513,6 +540,45 @@ export class Object3D extends EventEmitter {
           object?.[type]?.set(x, y, z);
           break;
       }
+    }
+  }
+  render() {
+    let frameT = clock.getDelta();
+    for (const iterator of this.modelObjects.values()) {
+      if (iterator.animations.length) {
+        this.canPlay && this.play();
+        !this.canPlay && this.animationsAction && this.animationsAction.play();
+        iterator.tick(frameT);
+      }
+    }
+  }
+
+  stopAnimation() {
+    this.animationsAction?.stop?.();
+    this.animationsAction = null;
+  }
+
+  playAnimation(uuid) {
+    const animationsAction = this.animationsActions.get(uuid);
+    this.animationsAction = animationsAction;
+  }
+
+  togglePlay() {
+    this.canPlay = !this.canPlay;
+    if (!this.canPlay) {
+      this.stop();
+    }
+  }
+
+  stop() {
+    for (const iterator of this.animationsActions.values()) {
+      iterator.stop();
+    }
+  }
+
+  play() {
+    for (const iterator of this.animationsActions.values()) {
+      iterator.play();
     }
   }
 

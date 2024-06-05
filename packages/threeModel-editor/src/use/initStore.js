@@ -6,24 +6,51 @@ import { useControlsStore } from '@stores/controls.js';
 import { useLightStore } from '@stores/light.js';
 import { useEnvironmentStore } from '@stores/environment.js';
 import { useEditorStore } from '@stores/editor.js';
-import { getEditorData } from '@request/editor.js';
-import { IndexDb } from '@packages/threeModel-core/core/IndexDb.js';
+import { getScene } from '@request/model.js';
+import { getEditorData, getHdrCategory, getSceneCategory } from '@request/editor.js';
 import { PiniaUndo } from '@/piniaPlugins/pinia-undo.js';
 import { useHelperStore } from '@stores/helper.js';
-const editorLocalStore = IndexDb.createStore('editorLocalStore');
+import { IndexDb } from '@packages/threeModel-core/core/IndexDb.js';
+const editorSceneStore = IndexDb.createStore('editorSceneStore');
 const editorMaterialLibraryStore = IndexDb.createStore('editorMaterialLibraryStore');
+const editorHDRLibraryStore = IndexDb.createStore('editorHDRLibraryStore');
 const initMaterialLibraryStore = async () => {
   const editorStore = useEditorStore();
-  const keys = await editorMaterialLibraryStore.keys(() => {});
-  for (const libraryStoreUUid of keys) {
+
+  const HDRKeys = await editorHDRLibraryStore.keys(() => {});
+  const hdr = [];
+  for (const libraryStoreUUid of HDRKeys) {
+    const libraryStoreItem = await editorHDRLibraryStore.getItem(libraryStoreUUid);
+    hdr.push(JSON.parse(libraryStoreItem));
+  }
+  editorStore.setValue('hdrLibrary', [...hdr]);
+
+  const materialKeys = await editorMaterialLibraryStore.keys(() => {});
+  for (const libraryStoreUUid of materialKeys) {
     const libraryStoreItem = await editorMaterialLibraryStore.getItem(libraryStoreUUid);
     editorStore.setMaterialLibrary(JSON.parse(libraryStoreItem));
   }
+
+  const sceneKeys = await editorSceneStore.keys(() => {});
+  const scene = [];
+  for (const libraryStoreUUid of sceneKeys) {
+    const libraryStoreItem = await editorSceneStore.getItem(libraryStoreUUid);
+    scene.push(JSON.parse(libraryStoreItem));
+  }
+  editorStore.setValue('sceneLibrary', [...scene]);
+
+  const hdrCategory = await getHdrCategory();
+  editorStore.setValue('hdrCategory', [...hdrCategory]);
+  const sceneCategory = await getSceneCategory();
+  const list = [...sceneCategory];
+  for (const category of list) {
+    category.data = [];
+  }
+  editorStore.setValue('sceneCategoryOptions', list);
 };
 export async function getStore(sceneId) {
   try {
-    const data = await editorLocalStore.getItem(sceneId);
-    const { scene, project, light, environment, controls, camera } = JSON.parse(data);
+    const { scene, project, light, environment, controls, camera } = await getScene({ uuid: sceneId });
 
     // 向URL对象添加参数
     // if (url.)
@@ -71,18 +98,21 @@ export async function getStore(sceneId) {
     light.category_name && lightStore.setValue('category_name', light.category_name);
     // sceneStore.setScene('geometries', geometries);
     // 场景关联渲染数据
-    sceneStore.setScene('images', scene.data.images);
-    sceneStore.setScene('materials', scene.data.materials);
-    sceneStore.setScene('modelMesh', scene.data.modelMesh);
+    if (scene.data) {
+      sceneStore.setScene('images', scene.data.images);
+      sceneStore.setScene('materials', scene.data.materials);
+      sceneStore.setScene('modelMesh', scene.data.modelMesh);
+      sceneStore.setValue('camera', scene.data.camera);
+      sceneStore.setValue('controls', scene.data.controls);
+      sceneStore.setValue('environment', scene.data.environment);
+      sceneStore.setValue('light', scene.data.light);
+      sceneStore.setValue('project', scene.data.project);
+      sceneStore.setValue('UV', scene.data.UV);
+    }
     sceneStore.setValue('uuid', scene.uuid);
     sceneStore.setValue('name', scene.name);
+    sceneStore.setValue('model_type', scene.model_type);
     sceneStore.setValue('category_id', scene.category_id);
-    sceneStore.setValue('camera', scene.data.camera);
-    sceneStore.setValue('controls', scene.data.controls);
-    sceneStore.setValue('environment', scene.data.environment);
-    sceneStore.setValue('light', scene.data.light);
-    sceneStore.setValue('project', scene.data.project);
-    sceneStore.setValue('UV', scene.data.UV);
     scene.category_name && sceneStore.setValue('category_name', scene.category_name);
     document.title = `模型编辑器-${scene.name}`;
     // sceneStore.setSelected(modelMesh[0]?.children?.[0]?.uuid);

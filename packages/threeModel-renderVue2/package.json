@@ -10,12 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
+  "author": "Chovi",
   "license": "ISC",
-  "repository": {
-  },
-  "bugs": {
-  },
   "browserslist": [
     "> 1%",
     "last 2 versions",

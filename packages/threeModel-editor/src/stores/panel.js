@@ -1,5 +1,6 @@
 // stores/panel.js
 import { defineStore } from 'pinia';
+import { clearDrawer } from '@feature/drawer/index.js';
 export const usePanelStore = defineStore('panel', {
   state: () => {
     return {
@@ -9,6 +10,7 @@ export const usePanelStore = defineStore('panel', {
   actions: {
     changePanel(activeId) {
       this.activeId = activeId;
+      clearDrawer();
     }
   }
 });

@@ -1,10 +1,10 @@
 <script setup>
-import { computed, defineAsyncComponent } from 'vue';
+import { computed } from 'vue';
 import { usePanelStore } from '@stores/panel.js';
 import MaterialsSetting from './MaterialsSetting.vue';
-const BackgroundSetting = defineAsyncComponent(() => import('./BackgroundSetting.vue'));
-const CameraSetting = defineAsyncComponent(() => import('./CameraSetting.vue'));
-const LightSetting = defineAsyncComponent(() => import('./LightSetting.vue'));
+import BackgroundSetting from './BackgroundSetting.vue';
+import CameraSetting from './CameraSetting.vue';
+import LightSetting from './LightSetting.vue';
 const tabs = {
   MaterialsSetting,
   LightSetting,

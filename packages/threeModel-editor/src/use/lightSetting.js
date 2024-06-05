@@ -363,7 +363,7 @@ export function useLightSetting() {
     return {
       label: '环境名',
       type: 'textInput',
-      value: name.value
+      value: environmentStore.name
     };
   });
   const environmentNameChange = value => {
@@ -464,7 +464,7 @@ export function useLightSetting() {
     position.z = value;
     environmentChange('environmentRotation', position);
   };
-  const hdrSuccess = ({ currentFile }) => {
+  const hdrSuccess = (_, currentFile) => {
     const file = { ...currentFile };
     switch (currentFile.status) {
       case 'error':
@@ -482,8 +482,7 @@ export function useLightSetting() {
   const fileImageData = computed(() => {
     return {
       value: environment.value.texture,
-      type: 'fileImage',
-      texture: true,
+      isTexture: true,
       title: name.value,
       des: category_name.value
     };

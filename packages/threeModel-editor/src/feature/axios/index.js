@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useMessage } from '@use/message.js';
+import { getQueryParam } from '@use/utils.js';
 const urlStringify = (param = {}) => {
   return new URLSearchParams(param).toString();
 };
@@ -18,7 +19,8 @@ const messageError = str => {
 var unTime;
 var service = axios.create({
   baseURL: import.meta.env.VITE_APP_AXIOS_URL, //正式
-  timeout: 30000
+  timeout: 30000,
+  adapter: 'fetch'
   // crossDomain: true
 });
 
@@ -30,26 +32,27 @@ service.interceptors.request.use(
   function (config) {
     // 在发送请求之前做些什么
     //添加Authorization
-    // let token = getCookie('Fusen_userToken');
-    // if (token) {
-    //   config.headers['Authorization'] = token;
-    // }
-    switch (import.meta.env.VITE_BUILD_ENV) {
-      case 'development':
-        config.headers['Authorization'] =
-          `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGZ1c2VuLmNuIiwiZXhwIjoxNzE3MDM1NjM1LCJncm91cF9pZCI6WzBdLCJpc3MiOiJmdXNlbiIsInVzZXJfZG4iOiJjbj1hZG1pbkBmdXNlbi5jbixvdT1GdXNlblRlYW0sZGM9ZnVzZW5wYWNrLGRjPWNvbSIsInVzZXJfaWQiOjExNTR9.11U2bxxs2fhtbLp_L8T4ZritWIfL7iEtX1o-y1ZfWbE`;
-        break;
-      case 'production':
-        config.headers['Authorization'] =
-          `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGZ1c2VuLmNuIiwiZXhwIjoxNzE3ODI5NzUwLCJncm91cF9pZCI6WzBdLCJpc3MiOiJmdXNlbiIsInVzZXJfZG4iOiJjbj1hZG1pbkBmdXNlbi5jbixvdT1GdXNlblRlYW0sZGM9ZnVzZW5wYWNrLGRjPWNvbSIsInVzZXJfaWQiOjExNDh9.R9SY-EnD1L1tgZUecxR16pCrvdgJVS67uMR8G6I0suY`;
-        break;
-      case 'test':
-        config.headers['Authorization'] =
-          `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGZ1c2VuLmNuIiwiZXhwIjoxNzE3ODMwNDU3LCJncm91cF9pZCI6WzBdLCJpc3MiOiJmdXNlbiIsInVzZXJfZG4iOiJjbj1hZG1pbkBmdXNlbi5jbixvdT1GdXNlblRlYW0sZGM9ZnVzZW5wYWNrLGRjPWNvbSIsInVzZXJfaWQiOjExNDR9.-f421T9sxvpAMk3c7x4_Pgt5fQGXAr2kA-EZFm-9QXo`;
-        break;
+    let token = getQueryParam('auth_key');
+    if (token) {
+      config.headers['Authorization'] = token;
+    } else {
+      switch (import.meta.env.VITE_BUILD_ENV) {
+        case 'development':
+          config.headers['Authorization'] =
+            `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGZ1c2VuLmNuIiwiZXhwIjoxNzE3MDM1NjM1LCJncm91cF9pZCI6WzBdLCJpc3MiOiJmdXNlbiIsInVzZXJfZG4iOiJjbj1hZG1pbkBmdXNlbi5jbixvdT1GdXNlblRlYW0sZGM9ZnVzZW5wYWNrLGRjPWNvbSIsInVzZXJfaWQiOjExNTR9.11U2bxxs2fhtbLp_L8T4ZritWIfL7iEtX1o-y1ZfWbE`;
+          break;
+        case 'production':
+          config.headers['Authorization'] =
+            `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGZ1c2VuLmNuIiwiZXhwIjoxNzE3ODI5NzUwLCJncm91cF9pZCI6WzBdLCJpc3MiOiJmdXNlbiIsInVzZXJfZG4iOiJjbj1hZG1pbkBmdXNlbi5jbixvdT1GdXNlblRlYW0sZGM9ZnVzZW5wYWNrLGRjPWNvbSIsInVzZXJfaWQiOjExNDh9.R9SY-EnD1L1tgZUecxR16pCrvdgJVS67uMR8G6I0suY`;
+          break;
+        case 'test':
+          config.headers['Authorization'] =
+            `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQGZ1c2VuLmNuIiwiZXhwIjoxNzE3ODMwNDU3LCJncm91cF9pZCI6WzBdLCJpc3MiOiJmdXNlbiIsInVzZXJfZG4iOiJjbj1hZG1pbkBmdXNlbi5jbixvdT1GdXNlblRlYW0sZGM9ZnVzZW5wYWNrLGRjPWNvbSIsInVzZXJfaWQiOjExNDR9.-f421T9sxvpAMk3c7x4_Pgt5fQGXAr2kA-EZFm-9QXo`;
+          break;
 
-      default:
-        break;
+        default:
+          break;
+      }
     }
     //加密
     if (config.data || config.params) {

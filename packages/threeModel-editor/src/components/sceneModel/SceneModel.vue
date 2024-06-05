@@ -16,7 +16,8 @@ const {
   modelError,
   deleteGroup,
   deleteMesh,
-  modelMeshChange
+  modelMeshChange,
+  openSceneLibrary
 } = useSceneModel();
 </script>
 
@@ -25,6 +26,9 @@ const {
     <arco-row class="scenemodel__header" align="center">
       <arco-col :span="12" class="scenemodel__title c__font-black">场景模型（SCENE）</arco-col>
       <arco-col :span="12" class="scenemodel__icon">
+        <a-tooltip content="模型管理">
+          <icon-code-sandbox class="scenemodel__manage" @click="openSceneLibrary" />
+        </a-tooltip>
         <file-upload
           action="/"
           :accept="accept"

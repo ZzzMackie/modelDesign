@@ -117,7 +117,7 @@ panelStore.$subscribe((_mutation, state) => {
     blackBg.value = false;
   }
 });
-cameraStore.$subscribe((_mutation, state) => {
+cameraStore.$subscribe(async (_mutation, state) => {
   const aspectRatio = state.camera.screenshot.width / state.camera.screenshot.height;
   cameraAspectRatio.value = aspectRatio;
   handleThreeAspectRatio();
@@ -163,7 +163,7 @@ onMounted(async () => {
   });
   sceneStore.threeEngine.on('resizeRendererUpdated', async () => {
     await nextTick();
-    handleThreeAspectRatio();
+    // handleThreeAspectRatio();
   });
 });
 const dragover = event => {

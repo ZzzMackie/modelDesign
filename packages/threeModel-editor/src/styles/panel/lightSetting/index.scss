@@ -19,7 +19,7 @@
     &light.arco-row{
         flex-direction: column;
         flex: 7;
-        max-height: 650px;
+        max-height: calc(100vh - 650px);
     }
     &img{
         display: flex;

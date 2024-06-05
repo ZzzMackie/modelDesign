@@ -13,9 +13,9 @@
         border-radius: var(--border-radius-8);
     }
     &screenshot.arco-row{
-        flex-direction: column;
         flex: 5;
         margin-bottom: var(--base-margin-20);
+        max-height: calc(100vh - 420px);
     }
     &position.arco-row{
         flex-direction: column;
@@ -24,7 +24,6 @@
     &position{
         overflow: hidden;
         min-height: 200px;
-        max-height: 306px;
     }
     &text{
         text-align: left;
@@ -77,8 +76,7 @@
     }
     &positioncontent{
         height: 100%;
-        overflow-y: auto;
-        max-height: calc(100% - 45px);
+        max-height: calc(100vh - 625px);
     }
     &image,
     &sizeinput,

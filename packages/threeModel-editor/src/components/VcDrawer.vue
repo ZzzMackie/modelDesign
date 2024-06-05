@@ -1,11 +1,11 @@
 <!-- eslint-disable vue/valid-define-props -->
 <script setup>
-import { ref, defineEmits, defineProps } from 'vue';
+import { ref, inject } from 'vue';
 const emit = defineEmits(['handleOk', 'handleCancel']);
 const props = defineProps({
   mask: {
     type: Boolean,
-    default: true
+    default: false
   },
   drawerVm: {
     type: Object,
@@ -51,7 +51,10 @@ const props = defineProps({
     type: Object,
     default: () => {}
   },
-  unmountOnClose: Boolean,
+  unmountOnClose: {
+    type: Boolean,
+    default: false
+  },
   width: {
     type: [Number, String],
     default: 250
@@ -97,26 +100,23 @@ const props = defineProps({
     default: false
   }
 });
-const visible = ref(true);
+const visible = inject('$visibleDrawer');
 const close = () => {
-  setTimeout(() => {
-    props.drawerVm.close();
-  }, 700);
+  props.drawerVm.close();
 };
 const handleOk = (...args) => {
-  visible.value = false;
   emit('handleOk', ...args);
   close();
 };
 const handleCancel = (...args) => {
-  visible.value = false;
   emit('handleCancel', ...args);
   close();
 };
+const id = ref(`vc_drawer__${props.drawerVm.key}`);
 </script>
 
 <template>
-  <div id="vc_drawer" class="vc_drawer__wrap">
+  <div :id class="vc_drawer__wrap">
     <arco-drawer
       :width
       :height
@@ -138,8 +138,8 @@ const handleCancel = (...args) => {
       :esc-to-close
       :on-before-cancel
       :on-before-ok
-      unmount-on-close
-      popup-container="#vc_drawer"
+      :unmount-on-close
+      :popup-container="`#${id}`"
       @ok="handleOk"
       @cancel="handleCancel"
     >

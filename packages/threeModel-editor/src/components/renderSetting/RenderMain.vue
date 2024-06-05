@@ -1,8 +1,8 @@
 <script setup>
-import { computed, defineAsyncComponent } from 'vue';
+import { computed } from 'vue';
 import { useEditorStore } from '@stores/editor.js';
 import RenderSetting from './RenderSetting.vue';
-const SceneToggle = defineAsyncComponent(() => import('./SceneToggle.vue'));
+import SceneToggle from './SceneToggle.vue';
 const tabs = {
   SceneToggle,
   RenderSetting

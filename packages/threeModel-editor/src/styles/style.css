@@ -139,7 +139,7 @@ div{
 
 /* //滚动条 */
 .c_scrollbar {
-    overflow-y: auto;
+    overflow-y: auto!important;
 
 
     /* //火狐兼容 */
@@ -173,7 +173,7 @@ div{
 
 /* //滚动条-无段都 */
 .c_scrollbar__x-none {
-    overflow-x: scroll;
+    overflow-x: scroll!important;
     
 
     /* //火狐兼容 */

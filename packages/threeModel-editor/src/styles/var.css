@@ -1,8 +1,9 @@
 :root {
-    --base-color: #ff7f00;
+    --base-color: #d54941;
     --base-dark-color: #212121;
     /* 整站文字基础色号 */
     --base-font-color: var(--base-dark-color);
+    --base-hover-color: #ffb9b0;
     --base-font-bold-color: #6b6b6b;
     --base-font-size: 16px;
     --base-font-min-size: 12px;
@@ -14,5 +15,6 @@
     --base-gray-color: #f8f8f8;
     --base-gray-dark1: #cec5c5;
     --base-margin-10: 10px;
-    --max-content-height: calc(100vh - (var(--base-margin-20)))
+    --max-content-height: calc(100vh - (var(--base-margin-20)));
+    --base-header-height: 54px;
   }

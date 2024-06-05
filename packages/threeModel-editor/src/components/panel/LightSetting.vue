@@ -1,5 +1,27 @@
 <script setup>
 import { useLightSetting } from '@use/lightSetting.js';
+import { createDrawer } from '@feature/drawer/index.js';
+import { defineAsyncComponent } from 'vue';
+const HdrLibrary = defineAsyncComponent(() => import('@components/library/HdrLibrary.vue'));
+const openHdrLibrary = e => {
+  if (e.target.tagName === 'IMG' || e.target.tagName === 'INPUT') return;
+  createDrawer({
+    key: 'HdrLibrary',
+    popupContainer: '#sceneWrap',
+    drawerOptions: {
+      props: {
+        title: 'HDR库',
+        width: 400,
+        footer: false
+      }
+    },
+    slotVnodeFn: h => {
+      return {
+        content: () => h(HdrLibrary)
+      };
+    }
+  });
+};
 const {
   environmentIntensityData,
   environmentIntensityChange,
@@ -33,7 +55,13 @@ const {
       <p class="lightsetting__text c__font-black">HDR</p>
       <SettingItem :info="environmentNameData" @change="environmentNameChange" />
       <arco-dropdown trigger="contextMenu" align-point :style="{ display: 'block' }">
-        <SettingItem :info="fileImageData" accept=".hdr" @success="hdrSuccess" @error="hdrSuccess" />
+        <upload-setting
+          accept=".hdr"
+          :info="fileImageData"
+          @upload-wrap-click="openHdrLibrary"
+          @upload-change="hdrSuccess"
+        ></upload-setting>
+        <!-- <SettingItem :info="fileImageData" accept=".hdr" @success="hdrSuccess" @error="hdrSuccess" /> -->
         <template #content>
           <arco-doption @click="downloadFile">下载</arco-doption>
         </template>

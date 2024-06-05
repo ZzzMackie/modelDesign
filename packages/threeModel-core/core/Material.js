@@ -1,7 +1,9 @@
 import * as THREE from 'three';
 import originMaterial from '../defaultData/originMaterial.js';
 import { proxyOptions } from './proxy.js';
-const rotationRepeatMap = ['normalMap', 'roughnessMap', 'metalnessMap'];
+const rotationRepeatMap = ['normalMap', 'roughnessMap', 'metalnessMap', 'specularMap', 'specularColorMap'];
+const rotationRepeatSingleMap = ['map', 'aoMap'];
+const rotationRepeatKey = ['rotation', 'repeat', 'mapRotation', 'mapRepeat', 'aoMapRotation', 'aoMapRepeat'];
 export class Material {
   constructor(threeEngine) {
     this.threeEngine = threeEngine;
@@ -10,6 +12,8 @@ export class Material {
     const colorMaps = ['map', 'emissiveMap', 'sheenColorMap', 'specularColorMap', 'envMap'];
     this.colorMaps = colorMaps;
     this.rotationRepeatMap = rotationRepeatMap;
+    this.rotationRepeatSingleMap = rotationRepeatSingleMap;
+    this.rotationRepeatKey = rotationRepeatKey;
     proxyOptions(this, this.threeEngine);
   }
   // 重置材质数据
@@ -42,14 +46,31 @@ export class Material {
     targetMaterial.needsUpdate = true;
   }
   // 设置材质关联贴图旋转重复属性
-  setMaterialTextureMapRotationRepeat({ material, key, value }) {
-    for (const prop of rotationRepeatMap) {
-      if (material[prop]) {
-        if (material[prop][key].set) {
-          material[prop][key].set(value, value);
-        } else {
-          // rotation 度数转弧度
-          material[prop][key] = value * THREE.MathUtils.DEG2RAD;
+  setMaterialTextureMapRotationRepeat({ material, key, value, isSingle = false }) {
+    if (isSingle) {
+      for (const singleKey of this.rotationRepeatSingleMap) {
+        if (key.includes(singleKey)) {
+          if (material[singleKey]) {
+            if (key.includes('Repeat')) {
+              if (material[singleKey]['repeat'].set) {
+                material[singleKey]['repeat'].set(value, value);
+              }
+            } else {
+              // rotation 度数转弧度
+              material[singleKey]['rotation'] = value * THREE.MathUtils.DEG2RAD;
+            }
+          }
+        }
+      }
+    } else {
+      for (const prop of rotationRepeatMap) {
+        if (material[prop]) {
+          if (material[prop][key].set) {
+            material[prop][key].set(value, value);
+          } else {
+            // rotation 度数转弧度
+            material[prop][key] = value * THREE.MathUtils.DEG2RAD;
+          }
         }
       }
     }
@@ -89,6 +110,12 @@ export class Material {
         case 'repeat':
         case 'rotation':
           this.setMaterialTextureMapRotationRepeat({ material, key, value });
+          break;
+        case 'aoMapRepeat':
+        case 'aoMapRotation':
+        case 'mapRepeat':
+        case 'mapRotation':
+          this.setMaterialTextureMapRotationRepeat({ material, key, value, isSingle: true });
           break;
         case 'type':
           break;

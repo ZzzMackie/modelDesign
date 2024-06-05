@@ -39,7 +39,7 @@
     }
     &swap{
         &:hover{
-            color: var(--base-color);
+            color: var(--base-hover-color);
         }
     }
     &model{
@@ -74,6 +74,14 @@
             &:hover{
                 background-color: transparent;
             }
+        }
+    }
+    &manage{
+        margin-right: var(--base-margin-20);
+        cursor: pointer;
+        font-size: 20px;
+        &:hover{
+            color: var(--base-hover-color);
         }
     }
 }

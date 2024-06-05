@@ -1,5 +1,5 @@
 {
-  "name": "threeModel-editor",
+  "name": "@fusen/threeModel-editor",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -17,12 +17,12 @@
   "dependencies": {
     "@tweenjs/tween.js": "^23.1.1",
     "@vueuse/core": "^10.8.0",
-    "axios": "^1.6.8",
+    "axios": "^1.7.2",
     "pinia": "^2.1.7",
     "vue": "^3.4.19"
   },
   "devDependencies": {
-    "@arco-design/web-vue": "^2.54.4",
+    "@arco-design/web-vue": "^2.55.2",
     "@arco-plugins/vite-vue": "^1.4.5",
     "@vitejs/plugin-vue": "^5.0.4",
     "less": "^4.2.0",

@@ -36,7 +36,7 @@ const {
 
 <template>
   <arco-col class="camerasetting__wrap">
-    <arco-row class="camerasetting__screenshot">
+    <arco-row class="camerasetting__screenshot c_scrollbar c_scrollbar__x-none">
       <arco-row class="camerasetting__setting">
         <p class="camerasetting__text c__font-black">相机组设置</p>
         <SettingItem :info="cameraNameData" @change="cameraNameChange" />

@@ -1,52 +1,52 @@
 {
     "data": [
         {
-            "value": -1,
-            "label": "全部"
+            "id": -1,
+            "name": "全部"
         },
         {
-            "value": 0,
-            "label": "其它"
+            "id": 0,
+            "name": "其它"
         },
         {
-            "value": 1,
-            "label": "汽车漆"
+            "id": 1,
+            "name": "汽车漆"
         },
         {
-            "value": 2,
-            "label": "织物"
+            "id": 2,
+            "name": "织物"
         },
         {
-            "value": 3,
-            "label": "皮革"
+            "id": 3,
+            "name": "皮革"
         },
         {
-            "value": 4,
-            "label": "透明"
+            "id": 4,
+            "name": "透明"
         },
         {
-            "value": 5,
-            "label": "纸"
+            "id": 5,
+            "name": "纸"
         },
         {
-            "value": 6,
-            "label": "塑料"
+            "id": 6,
+            "name": "塑料"
         },
         {
-            "value": 10,
-            "label": "木头"
+            "id": 7,
+            "name": "石头"
         },
         {
-            "value": 7,
-            "label": "石头"
+            "id": 8,
+            "name": "食物"
         },
         {
-            "value": 8,
-            "label": "食物"
+            "id": 9,
+            "name": "金属"
         },
         {
-            "value": 9,
-            "label": "金属"
+            "id": 10,
+            "name": "木头"
         }
     ]
 }

@@ -73,7 +73,7 @@
         &header{
             overflow: hidden;
             transition: height .3s ease;
-            height: 54px;
+            height: var(--base-header-height);
         }
         &container{
             position: relative;
@@ -120,6 +120,8 @@
     }
     &type{
         flex: 1;
+        max-height: var(--base-header-height);
+        min-height: var(--base-header-height);
     }
     &panel{
         margin-top: var(--base-margin-20);

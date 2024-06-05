@@ -1,0 +1,83 @@
+.scene_library__{
+    &wrap{
+        .arco-input-search .arco-input-search-btn {
+            height: 100%;
+        }
+        .arco-card-body{
+            padding: 0 0 0 5px;
+        }
+        .arco-input-wrapper.arco-input-focus{
+            border-color: transparent;
+        }
+        .arco-input-wrapper{
+            .arco-input{
+                padding-top: 0;
+            }
+        }
+        .arco-card-meta-title{
+            font-weight: 600;
+            color: var(--base-font-color);
+        }
+    }
+    &tabs{
+        margin-top: var(--base-margin-20);
+    }
+    &addscene{
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    &card{
+        &item{
+            margin-bottom: var(--base-margin-10);
+            &:not(:nth-child(3n)) {
+                margin-right: var(--base-margin-20);
+            }
+            &:nth-child(3n + 1) {
+                margin-left: 15px;
+            }
+        }
+        &content{
+            cursor: pointer;
+            border-radius: var(--border-radius-8);
+        }
+        &-active{
+            background-color: var(--base-color);
+            border-color: var(--base-color);
+            .arco-input{
+                color: #fff;
+            }
+        }
+        &-loading{
+            .material_library__cardcontent{
+                cursor: progress;
+            }
+        }
+        &cover{
+            overflow: hidden;
+            position: relative;
+        }
+    }
+    &tabitem{
+        max-height: calc(100vh - 355px);
+    }
+    &spin{
+        width: 100%;
+    }
+    &img{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: var(--border-radius-8);
+        .arco-image-img{
+            height: inherit;
+            height: -webkit-fill-available;
+        }
+    }
+}
+#SceneLibrary{
+    position: absolute;
+    left: 0;
+    width: 600px;
+}
