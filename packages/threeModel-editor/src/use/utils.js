@@ -1,3 +1,4 @@
+import { IndexDb } from '@packages/threeModel-core/core/IndexDb.js';
 /**
  * 图片转base64
  * @param {String} src 图片地址
@@ -191,4 +192,61 @@ export const openScene = ({ uuid, target = '_blank' }) => {
   } else {
     window.open(`/modelDesign/?scene=${uuid}`, target);
   }
+};
+
+export const fileToBlob = file => {
+  return new Promise(res => {
+    // 假设你有一个file对象
+    // 创建一个FileReader实例
+    const reader = new FileReader();
+
+    // 当文件读取完毕后会触发 load 事件
+    reader.addEventListener('load', function () {
+      // 此时 reader.result 将包含文件的数据
+      const blob = new Blob([reader.result], { type: file.type });
+      res(blob);
+    });
+
+    // 以数据URL的形式读取文件内容
+    reader.readAsArrayBuffer(file);
+  });
+};
+
+export const blobToBase64 = blob => {
+  return new Promise(res => {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      res(event.target.result);
+    };
+    reader.readAsDataURL(blob);
+  });
+};
+
+export const fileToBase64 = async file => {
+  const blob = await fileToBlob(file);
+  const base64 = await blobToBase64(blob);
+  return base64;
+};
+
+export const getIndexDbStore = () => {
+  const cameraIndexDbStore = IndexDb.createStore('cameraIndexDbStore');
+  const controlsIndexDbStore = IndexDb.createStore('controlsIndexDbStore');
+  const environmentIndexDbStore = IndexDb.createStore('environmentIndexDbStore');
+  const lightIndexDbStore = IndexDb.createStore('lightIndexDbStore');
+  const projectIndexDbStore = IndexDb.createStore('projectIndexDbStore');
+  const sceneIndexDbStore = IndexDb.createStore('sceneIndexDbStore');
+  const editorSceneStore = IndexDb.createStore('editorSceneStore');
+  const editorMaterialLibraryStore = IndexDb.createStore('editorMaterialLibraryStore');
+  const editorHDRLibraryStore = IndexDb.createStore('editorHDRLibraryStore');
+  return {
+    cameraIndexDbStore,
+    controlsIndexDbStore,
+    environmentIndexDbStore,
+    lightIndexDbStore,
+    projectIndexDbStore,
+    sceneIndexDbStore,
+    editorSceneStore,
+    editorMaterialLibraryStore,
+    editorHDRLibraryStore
+  };
 };

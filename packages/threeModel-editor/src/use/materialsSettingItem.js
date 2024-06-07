@@ -1824,11 +1824,15 @@ export function useMaterialsSettingItem() {
       }
     ];
   });
+  const MeshPhongMaterial = computed(() => {
+    return [...DEFAULT__MATERIAL.value, ...DEFAULT__MAPMATERIAL.value];
+  });
   return {
     MeshPhysicalMaterial,
     MeshStandardMaterial,
     MeshBasicMaterial,
     fileImageData,
-    modelMaterialChange
+    modelMaterialChange,
+    MeshPhongMaterial
   };
 }

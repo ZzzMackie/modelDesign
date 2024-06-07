@@ -6,8 +6,14 @@ import { useEditorStore } from '@stores/editor.js';
 import { createDrawer } from '@feature/drawer/index.js';
 const MaterialLibrary = defineAsyncComponent(() => import('@components/library/MaterialLibrary.vue'));
 export function useMaterialsSetting() {
-  const { MeshPhysicalMaterial, MeshStandardMaterial, MeshBasicMaterial, fileImageData, modelMaterialChange } =
-    useMaterialsSettingItem();
+  const {
+    MeshPhysicalMaterial,
+    MeshStandardMaterial,
+    MeshBasicMaterial,
+    MeshPhongMaterial,
+    fileImageData,
+    modelMaterialChange
+  } = useMaterialsSettingItem();
   const { UV, currentMaterial, currentModel } = useScene();
   const sceneStore = useSceneStore();
   const file = computed(() => UV.value.file);
@@ -53,6 +59,9 @@ export function useMaterialsSetting() {
         break;
       case 'MeshBasicMaterial':
         material = MeshBasicMaterial.value;
+        break;
+      case 'MeshPhongMaterial':
+        material = MeshPhongMaterial.value;
         break;
       default:
         break;

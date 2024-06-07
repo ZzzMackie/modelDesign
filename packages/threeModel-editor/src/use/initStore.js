@@ -6,14 +6,20 @@ import { useControlsStore } from '@stores/controls.js';
 import { useLightStore } from '@stores/light.js';
 import { useEnvironmentStore } from '@stores/environment.js';
 import { useEditorStore } from '@stores/editor.js';
-import { getScene } from '@request/model.js';
-import { getEditorData, getHdrCategory, getSceneCategory } from '@request/editor.js';
 import { PiniaUndo } from '@/piniaPlugins/pinia-undo.js';
 import { useHelperStore } from '@stores/helper.js';
-import { IndexDb } from '@packages/threeModel-core/core/IndexDb.js';
-const editorSceneStore = IndexDb.createStore('editorSceneStore');
-const editorMaterialLibraryStore = IndexDb.createStore('editorMaterialLibraryStore');
-const editorHDRLibraryStore = IndexDb.createStore('editorHDRLibraryStore');
+import { getIndexDbStore } from '@use/utils.js';
+const {
+  editorSceneStore,
+  editorMaterialLibraryStore,
+  editorHDRLibraryStore,
+  sceneIndexDbStore,
+  environmentIndexDbStore,
+  projectIndexDbStore,
+  cameraIndexDbStore,
+  controlsIndexDbStore,
+  lightIndexDbStore
+} = getIndexDbStore();
 const initMaterialLibraryStore = async () => {
   const editorStore = useEditorStore();
 
@@ -38,20 +44,35 @@ const initMaterialLibraryStore = async () => {
     scene.push(JSON.parse(libraryStoreItem));
   }
   editorStore.setValue('sceneLibrary', [...scene]);
-
-  const hdrCategory = await getHdrCategory();
-  editorStore.setValue('hdrCategory', [...hdrCategory]);
-  const sceneCategory = await getSceneCategory();
-  const list = [...sceneCategory];
-  for (const category of list) {
-    category.data = [];
-  }
-  editorStore.setValue('sceneCategoryOptions', list);
 };
 export async function getStore(sceneId) {
   try {
-    const { scene, project, light, environment, controls, camera } = await getScene({ uuid: sceneId });
+    let scene = await sceneIndexDbStore.getItem(sceneId);
+    if (scene) {
+      scene = JSON.parse(scene);
+    }
+    let environment = await environmentIndexDbStore.getItem(scene.data.environment);
+    if (environment) {
+      environment = JSON.parse(environment);
+    }
 
+    let project = await projectIndexDbStore.getItem(scene.data.project);
+    if (project) {
+      project = JSON.parse(project);
+    }
+
+    let camera = await cameraIndexDbStore.getItem(scene.data.camera);
+    if (camera) {
+      camera = JSON.parse(camera);
+    }
+    let controls = await controlsIndexDbStore.getItem(scene.data.controls);
+    if (controls) {
+      controls = JSON.parse(controls);
+    }
+    let light = await lightIndexDbStore.getItem(scene.data.light);
+    if (light) {
+      light = JSON.parse(light);
+    }
     // 向URL对象添加参数
     // if (url.)
     const environmentStore = useEnvironmentStore();
@@ -60,7 +81,7 @@ export async function getStore(sceneId) {
     const controlsStore = useControlsStore();
     const lightStore = useLightStore();
     const sceneStore = useSceneStore();
-    // environmentStore.setValue(environment.data, false);
+    environmentStore.setValue(environment.data, false);
     environmentStore.setValue('background', environment.data.background);
     environmentStore.setValue('environment', environment.data.environment);
     environmentStore.setValue('uuid', environment.uuid);
@@ -96,8 +117,8 @@ export async function getStore(sceneId) {
     lightStore.setValue('name', light.name);
     lightStore.setValue('category_id', light.category_id);
     light.category_name && lightStore.setValue('category_name', light.category_name);
-    // sceneStore.setScene('geometries', geometries);
-    // 场景关联渲染数据
+    // // sceneStore.setScene('geometries', geometries);
+    // // 场景关联渲染数据
     if (scene.data) {
       sceneStore.setScene('images', scene.data.images);
       sceneStore.setScene('materials', scene.data.materials);
@@ -115,7 +136,6 @@ export async function getStore(sceneId) {
     sceneStore.setValue('category_id', scene.category_id);
     scene.category_name && sceneStore.setValue('category_name', scene.category_name);
     document.title = `模型编辑器-${scene.name}`;
-    // sceneStore.setSelected(modelMesh[0]?.children?.[0]?.uuid);
   } catch (error) {
     console.error(error);
   }
@@ -165,17 +185,6 @@ export async function initStore() {
     const sceneId = url.searchParams.get('scene');
     const sceneStore = useSceneStore();
     const editorStore = useEditorStore();
-    getEditorData().then(({ scene: sceneList }) => {
-      editorStore.setSceneList(sceneList);
-      if (!editorStore.getCurrentSceneData && sceneId) {
-        editorStore.addScene({
-          category_id: sceneStore.category_id,
-          category_name: sceneStore.category_name,
-          name: sceneStore.name,
-          uuid: sceneId
-        });
-      }
-    });
     if (sceneId) {
       sceneStore.setValue('uuid', sceneId);
       editorStore.setCurrentScene(sceneId);

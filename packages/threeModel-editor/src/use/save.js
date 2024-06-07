@@ -12,10 +12,10 @@ import { useProjectStore } from '@stores/project.js';
 import { useProject } from './projectStore.js';
 import { useScene } from './sceneStore.js';
 import { useSceneStore } from '@stores/scene.js';
-import { save } from '@request/save.js';
-import { upload, uploadBase64 } from './upload.js';
 import { useMessage } from '@use/message.js';
-import { appendQueryParam, openScene } from '@use/utils.js';
+import { appendQueryParam, openScene, getIndexDbStore, fileToBase64 } from '@use/utils.js';
+const indexDbStore = getIndexDbStore();
+
 const excludeKey = ['uuid', 'name', 'category_id', 'geometries', 'threeEngine'];
 const sceneDataKey = [
   'UV',
@@ -163,7 +163,7 @@ const handleImageUpload = async (scene, canSave) => {
     if (image.url.file && image.url.file instanceof File) {
       $message.clear();
       $message.info(`有本地资源未上传, 开始上传资源`);
-      const { resource_url } = await upload(image.url.file);
+      const resource_url = await fileToBase64(image.url.file);
       if (resource_url) {
         image.url = resource_url;
         $message.clear();
@@ -177,23 +177,23 @@ const handleImageUpload = async (scene, canSave) => {
   }
   return canSave;
 };
-const handleCameraUpload = async (camera, canSave) => {
-  const $message = useMessage();
-  if (camera?.data?.screenshot?.url?.includes?.('base64')) {
-    $message.info(`有本地资源未上传, 开始上传资源`);
-    const { resource_url } = await uploadBase64(camera?.data?.screenshot?.url);
-    if (resource_url) {
-      $message.clear();
-      $message.success(`上传文件成功; ${resource_url}`);
-      camera.data.screenshot.url = resource_url;
-    } else {
-      $message.clear();
-      $message.error(`上传文件失败，保存失败`);
-      canSave = false;
-    }
-  }
-  return canSave;
-};
+// const handleCameraUpload = async (camera, canSave) => {
+//   const $message = useMessage();
+//   if (camera?.data?.screenshot?.url?.includes?.('base64')) {
+//     $message.info(`有本地资源未上传, 开始上传资源`);
+//     const { resource_url } = await uploadBase64(camera?.data?.screenshot?.url);
+//     if (resource_url) {
+//       $message.clear();
+//       $message.success(`上传文件成功; ${resource_url}`);
+//       camera.data.screenshot.url = resource_url;
+//     } else {
+//       $message.clear();
+//       $message.error(`上传文件失败，保存失败`);
+//       canSave = false;
+//     }
+//   }
+//   return canSave;
+// };
 const handleModelUpload = async (scene, canSave) => {
   const $message = useMessage();
   // 模型资源文件上传
@@ -201,10 +201,9 @@ const handleModelUpload = async (scene, canSave) => {
     if (model.modelPath && model.modelPath instanceof File) {
       $message.clear();
       $message.info(`有本地模型资源未上传, 开始上传资源`);
-      const { resource_url, resource_id } = await upload(model.modelPath);
+      const resource_url = await fileToBase64(model.modelPath);
       if (resource_url) {
         model.modelPath = resource_url;
-        model.modelResource_id = resource_id;
         $message.clear();
         $message.success(`上传模型文件成功; ${resource_url}`);
       } else {
@@ -219,7 +218,7 @@ const handleModelUpload = async (scene, canSave) => {
     if (material.image?.file && material.image.file instanceof File) {
       $message.clear();
       $message.info(`有本地材质封面资源未上传, 开始上传资源`);
-      const { resource_url } = await upload(material.image.file);
+      const resource_url = await fileToBase64(material.image.file);
       if (resource_url) {
         material.image = resource_url;
         $message.clear();
@@ -237,7 +236,7 @@ const handleEnvironmentUpload = async (environment, canSave) => {
   const $message = useMessage();
   if (environment?.data?.environment?.path?.file) {
     $message.info(`有本地hdr资源未上传, 开始上传资源`);
-    const { resource_url } = await upload(environment?.data?.environment?.path?.file);
+    const resource_url = await fileToBase64(environment?.data?.environment?.path?.file);
     if (resource_url) {
       $message.clear();
       $message.success(`上传hdr文件成功; ${resource_url}`);
@@ -250,7 +249,7 @@ const handleEnvironmentUpload = async (environment, canSave) => {
   }
   if (environment?.data?.background?.path?.file) {
     $message.info(`有本地背景资源未上传, 开始上传资源`);
-    const { resource_url } = await upload(environment?.data?.background?.path?.file);
+    const resource_url = await fileToBase64(environment?.data?.background?.path?.file);
     if (resource_url) {
       $message.clear();
       $message.success(`上传背景文件成功; ${resource_url}`);
@@ -283,12 +282,12 @@ export async function useSave() {
     };
     let canSave = true;
     canSave = await handleImageUpload(scene, canSave);
-    canSave = await handleCameraUpload(camera, canSave);
+    // canSave = await handleCameraUpload(camera, canSave);
     canSave = await handleModelUpload(scene, canSave);
     canSave = await handleEnvironmentUpload(environment, canSave);
     if (canSave) {
       //   const response = await save(saveData);
-      save(saveData).then(() => {
+      saveLocal(saveData).then(() => {
         $message.success('保存成功');
       });
     }
@@ -363,12 +362,12 @@ export async function useSaveAs() {
     copySaveData(saveData);
     let canSave = true;
     canSave = await handleImageUpload(scene, canSave);
-    canSave = await handleCameraUpload(camera, canSave);
+    // canSave = await handleCameraUpload(camera, canSave);
     canSave = await handleModelUpload(scene, canSave);
     canSave = await handleEnvironmentUpload(environment, canSave);
     if (canSave) {
       //   const response = await save(saveData);
-      save(saveData).then(() => {
+      saveLocal(saveData).then(() => {
         $message.success('保存成功');
         openScene({ uuid: saveData.scene.uuid, target: '_blank' });
       });
@@ -379,3 +378,9 @@ export async function useSaveAs() {
     $message.success('保存失败');
   }
 }
+
+const saveLocal = saveData => {
+  for (const key of Object.keys(saveData)) {
+    indexDbStore[`${key}IndexDbStore`].setItem(saveData[key].uuid, JSON.stringify(saveData[key]));
+  }
+};

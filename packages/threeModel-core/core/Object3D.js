@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import EventEmitter from 'events';
 import { proxyOptions } from './proxy.js';
+const includesMaterials = ['MeshPhysicalMaterial', 'MeshStandardMaterial', 'MeshBasicMaterial'];
 const clock = new THREE.Clock();
 export class Object3D extends EventEmitter {
   constructor(threeEngine) {
@@ -179,7 +180,7 @@ export class Object3D extends EventEmitter {
       if (child.isMesh) {
         child.geometry.attributes.uv2 = child.geometry.attributes.uv; //设置第二组uv
         // console.log(child);
-        // this.generateNewMeshMaterial(child);
+        this.generateNewMeshMaterial(child);
       }
     });
     this.addObject({ object: model });
@@ -187,7 +188,7 @@ export class Object3D extends EventEmitter {
     for (const material of modelData.materials) {
       this.material__three.resetMaterialData(material);
       // FIXEME
-      material.image = '/threeModel-editor/circle.png';
+      material.image = '/modelDesign/circle.png';
       material.rotation = 0;
       material.repeat = 1;
       material.mapRotation = 0;
@@ -503,16 +504,20 @@ export class Object3D extends EventEmitter {
   async generateNewMeshMaterial(modelMesh) {
     if (Array.isArray(modelMesh.material)) {
       for (var index = 0, l = modelMesh.material.length; index < l; index++) {
+        if (!includesMaterials.includes(modelMesh.material[index].type)) {
+          const material = new THREE.MeshPhysicalMaterial();
+          this.material__three.resetMaterialData(material, true);
+          material.needsUpdate = true;
+          this.setObjectMaterial(modelMesh, index, material);
+        }
+      }
+    } else {
+      if (!includesMaterials.includes(modelMesh.material.type)) {
         const material = new THREE.MeshPhysicalMaterial();
         this.material__three.resetMaterialData(material, true);
         material.needsUpdate = true;
-        this.setObjectMaterial(modelMesh, index, material);
+        this.setObjectMaterial(modelMesh, 0, material);
       }
-    } else {
-      const material = new THREE.MeshPhysicalMaterial();
-      this.material__three.resetMaterialData(material, true);
-      material.needsUpdate = true;
-      this.setObjectMaterial(modelMesh, 0, material);
     }
   }
   // 替换掉模型对象的材质
